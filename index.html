@@ -48,7 +48,6 @@
     #kort { height: 460px; border-radius:16px; border:1px solid rgba(126,206,244,0.2); overflow:hidden; }
     @media(max-width:600px){ #kort { height:320px; } }
 
-    /* Leaflet */
     .leaflet-container { background:#0d2b4e; }
     .leaflet-popup-content-wrapper {
       background:#0d2b4e; color:#e8f4fd;
@@ -56,8 +55,6 @@
     }
     .leaflet-popup-tip { background:#0d2b4e; }
     .leaflet-popup-content { margin:10px 14px; font-size:0.88rem; line-height:1.5; }
-
-    /* Lagkontrol tilpasning */
     .leaflet-control-layers {
       background: rgba(10,22,40,0.92) !important;
       border: 1px solid #2a5f8a !important;
@@ -67,7 +64,7 @@
     .leaflet-control-layers-expanded { padding: 8px 12px !important; }
     .leaflet-control-layers label { color: #e8f4fd !important; font-size: 0.85rem; }
 
-    /* Rute-knapper */
+    /* Rute-panel */
     .rute-panel {
       max-width:960px; margin:0 auto 0.6rem; padding:0 1rem;
       display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;
@@ -88,21 +85,14 @@
     }
 
     /* Vindlegende */
-    #vind-legende {
-      max-width:960px; margin:0 auto 0.5rem; padding:0 1rem;
-      display:none;
-    }
+    #vind-legende { max-width:960px; margin:0 auto 0.5rem; padding:0 1rem; display:none; }
     .legende-boks {
       background:rgba(255,255,255,0.06); border:1px solid rgba(126,206,244,0.15);
       border-radius:12px; padding:0.7rem 1rem;
-      display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;
-      font-size:0.8rem;
+      display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; font-size:0.8rem;
     }
     .legende-boks span { color:#5a9fbf; margin-right:0.3rem; }
-    .legende-farve {
-      display:inline-block; width:28px; height:14px;
-      border-radius:3px; vertical-align:middle;
-    }
+    .legende-farve { display:inline-block; width:28px; height:14px; border-radius:3px; vertical-align:middle; }
 
     /* Forecast faner */
     .fane-bar {
@@ -129,6 +119,7 @@
     .vejr-kort h2 {
       font-size:0.68rem; text-transform:uppercase; letter-spacing:2px;
       color:#5a9fbf; margin-bottom:0.8rem;
+      display:flex; align-items:center; gap:0.4rem;
     }
     .stor-tal { font-size:2.6rem; font-weight:700; line-height:1; color:#fff; }
     .enhed { font-size:0.9rem; color:#8ab4cc; margin-left:3px; }
@@ -141,7 +132,6 @@
     .række .label { color:#7ab0cc; font-size:0.86rem; }
     .række .værdi { font-weight:600; font-size:0.9rem; }
 
-    /* Vindfarver (m/s baseret) */
     .vind-grøn { color:#4ddb6a; }
     .vind-gul  { color:#f0c040; }
     .vind-rød  { color:#ff6b6b; }
@@ -177,7 +167,7 @@
 
     /* Forecast tabel */
     .forecast-scroll { overflow-x:auto; }
-    .forecast-tabel { width:100%; border-collapse:collapse; font-size:0.83rem; min-width:400px; }
+    .forecast-tabel { width:100%; border-collapse:collapse; font-size:0.83rem; min-width:480px; }
     .forecast-tabel th {
       text-align:left; color:#5a9fbf; font-weight:600;
       padding:0.3rem 0.5rem; border-bottom:1px solid rgba(255,255,255,0.1);
@@ -186,6 +176,61 @@
     .forecast-tabel td { padding:0.4rem 0.5rem; border-bottom:1px solid rgba(255,255,255,0.05); }
     .forecast-tabel tr:last-child td { border-bottom:none; }
     .forecast-tabel tr:hover td { background:rgba(255,255,255,0.04); }
+
+    /* ── FCOO sektion ──────────────────────── */
+    .sektion-header {
+      max-width:960px; margin:0.2rem auto 0.5rem; padding:0 1rem;
+      display:flex; align-items:center; gap:0.8rem; cursor:pointer; user-select:none;
+    }
+    .sektion-header h3 {
+      font-size:0.72rem; text-transform:uppercase; letter-spacing:2px;
+      color:#5a9fbf; flex:1;
+    }
+    .sektion-toggle {
+      padding:0.3rem 0.8rem; border-radius:8px; border:1px solid #2a5f8a;
+      background:rgba(255,255,255,0.06); color:#7ab0cc; font-size:0.78rem; cursor:pointer;
+      transition:all 0.15s;
+    }
+    .sektion-toggle:hover { background:rgba(255,255,255,0.12); }
+    .fcoo-badge {
+      display:inline-block; font-size:0.6rem; font-weight:700;
+      background:#1a3a6a; color:#7ecef4; border:1px solid #2a5f8a;
+      border-radius:4px; padding:1px 5px; vertical-align:middle; margin-left:4px;
+      letter-spacing:1px;
+    }
+    .fcoo-ingen-data {
+      max-width:960px; margin:0 auto 0.6rem; padding:0 1rem;
+    }
+    .fcoo-ingen-data div {
+      background:rgba(255,255,255,0.04); border:1px solid rgba(126,206,244,0.1);
+      border-radius:12px; padding:0.7rem 1rem; color:#5a9fbf; font-size:0.85rem;
+    }
+
+    /* FCOO plots */
+    .fcoo-plots {
+      max-width:960px; margin:0 auto 0.9rem; padding:0 1rem;
+    }
+    .plot-faner {
+      display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:0.7rem;
+    }
+    .plot-fane {
+      padding:0.35rem 0.8rem; border-radius:9px; border:1px solid #2a5f8a;
+      background:rgba(255,255,255,0.05); color:#7ab0cc;
+      cursor:pointer; font-size:0.8rem; transition:all 0.15s;
+    }
+    .plot-fane:hover { background:rgba(255,255,255,0.1); }
+    .plot-fane.aktiv { background:#1a5a8a; color:#e8f4fd; border-color:#7ecef4; }
+    .plot-container {
+      background:rgba(255,255,255,0.04); border:1px solid rgba(126,206,244,0.12);
+      border-radius:14px; padding:0.8rem; text-align:center; min-height:180px;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .plot-container img {
+      max-width:100%; border-radius:8px;
+      filter: invert(0.05) brightness(1.05);
+    }
+    .plot-loading { color:#5a9fbf; font-size:0.85rem; }
+    .plot-fejl { color:#ff9070; font-size:0.85rem; }
 
     .spinner {
       text-align:center; padding:2rem; color:#5a9fbf; display:none;
@@ -249,8 +294,9 @@
   </div>
 </div>
 
-<!-- Vejrresultat -->
+<!-- ── Vejrresultat ──────────────────────── -->
 <div id="resultat">
+
   <div class="vurdering">
     <div class="vurdering-boks" id="vurdering-boks">
       <span class="vurdering-ikon" id="vurdering-ikon">⛵</span>
@@ -258,6 +304,7 @@
     </div>
   </div>
 
+  <!-- Aktuelt vejr -->
   <div class="grid">
     <div class="vejr-kort">
       <h2>Sted &amp; vejr</h2>
@@ -304,13 +351,75 @@
     </div>
   </div>
 
-  <!-- 5-dages oversigt -->
+  <!-- ── FCOO SEKTION ──────────────────────── -->
+  <div class="sektion-header" onclick="toggleFcooSektion()">
+    <h3>🌊 FCOO Havdata <span class="fcoo-badge">FCOO</span></h3>
+    <button class="sektion-toggle" id="fcoo-toggle-knap">Skjul</button>
+  </div>
+
+  <div id="fcoo-sektion">
+    <!-- FCOO data-kort -->
+    <div class="grid" id="fcoo-grid" style="display:none;">
+      <!-- Havstrøm -->
+      <div class="vejr-kort">
+        <h2>Havstrøm <span class="fcoo-badge">FCOO</span></h2>
+        <div style="display:flex;align-items:flex-end;gap:0.4rem;margin-bottom:0.7rem;">
+          <span class="stor-tal" id="fcoo-strøm-ms">–</span>
+          <span class="enhed">knob</span>
+        </div>
+        <div class="rækker">
+          <div class="række"><span class="label">Retning</span><span class="værdi" id="fcoo-strøm-ret">–</span></div>
+          <div class="række"><span class="label">Ø-komp. (u)</span><span class="værdi" id="fcoo-strøm-u">–</span></div>
+          <div class="række"><span class="label">N-komp. (v)</span><span class="værdi" id="fcoo-strøm-v">–</span></div>
+        </div>
+      </div>
+
+      <!-- Hav & vandstand -->
+      <div class="vejr-kort">
+        <h2>Hav &amp; vandstand <span class="fcoo-badge">FCOO</span></h2>
+        <div class="rækker">
+          <div class="række"><span class="label">Vandtemperatur</span><span class="værdi" id="fcoo-havtemp">–</span></div>
+          <div class="række"><span class="label">Saltindhold</span><span class="værdi" id="fcoo-salt">–</span></div>
+          <div class="række"><span class="label">Vandstand</span><span class="værdi" id="fcoo-vandstand">–</span></div>
+          <div class="række"><span class="label">Bølgehøjde</span><span class="værdi" id="fcoo-bølge">–</span></div>
+          <div class="række"><span class="label">Bølgeperiode</span><span class="værdi" id="fcoo-bølgep">–</span></div>
+        </div>
+      </div>
+
+      <!-- Atmosfære FCOO -->
+      <div class="vejr-kort">
+        <h2>Atmosfære <span class="fcoo-badge">FCOO</span></h2>
+        <div class="rækker">
+          <div class="række"><span class="label">Vind</span><span class="værdi" id="fcoo-vind">–</span></div>
+          <div class="række"><span class="label">Lufttemperatur</span><span class="værdi" id="fcoo-lufttemp">–</span></div>
+          <div class="række"><span class="label">Sigtbarhed</span><span class="værdi" id="fcoo-sigt">–</span></div>
+          <div class="række"><span class="label">Nedbør</span><span class="værdi" id="fcoo-nedboer">–</span></div>
+          <div class="række"><span class="label">Skydække</span><span class="værdi" id="fcoo-sky">–</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ingen FCOO-data -->
+    <div class="fcoo-ingen-data" id="fcoo-ingen" style="display:none;">
+      <div>⚓ Ingen FCOO havdata for dette sted – FCOO dækker primært danske og omliggende farvande. For indlandspositioner vises kun Open-Meteo data.</div>
+    </div>
+
+    <!-- FCOO Forecast plots -->
+    <div class="fcoo-plots" id="fcoo-plots" style="display:none;">
+      <div class="plot-faner" id="plot-faner"></div>
+      <div class="plot-container" id="plot-container">
+        <span class="plot-loading">Vælg en parameter ovenfor</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 5-dages oversigt ──────────────────── -->
   <div class="fane-bar">
     <div style="color:#5a9fbf;font-size:0.78rem;align-self:center;padding-right:0.3rem;">5 DAGE:</div>
   </div>
   <div class="dag-grid" id="dag-grid"></div>
 
-  <!-- Detaljeret forecast for valgt dag -->
+  <!-- Detaljeret forecast -->
   <div class="grid" style="grid-template-columns:1fr;">
     <div class="vejr-kort">
       <h2 id="forecast-titel">Forecast – næste 24 timer</h2>
@@ -324,6 +433,7 @@
               <th>Retning</th>
               <th>Bølge</th>
               <th>Vejr</th>
+              <th>Strøm <span class="fcoo-badge">FCOO</span></th>
             </tr>
           </thead>
           <tbody id="forecast-rækker"></tbody>
@@ -331,7 +441,8 @@
       </div>
     </div>
   </div>
-</div>
+
+</div><!-- #resultat -->
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -347,7 +458,43 @@ const VEJRKODER = {
   95:"⛈️ Tordenvejr", 99:"⛈️ Kraftigt tordenvejr",
 };
 
-// Vind-vurdering udelukkende i m/s
+// ── FCOO konfiguration ────────────────────────────────────────
+const FCOO_API   = 'https://api.fcoo.dk/metoc/v2/data/timeseries';
+const FCOO_PLOT  = 'https://metoc.fcoo.dk/webapi/plot/timeseries';
+
+// Plots der vises med knapper (parameter → label)
+const FCOO_PLOT_PARAMS = [
+  { p:'Wind',               label:'💨 Vind'         },
+  { p:'WaveHeight',         label:'🌊 Bølgehøjde'   },
+  { p:'SeaSurfaceCurrent',  label:'🔄 Havstrøm'     },
+  { p:'Sealevel',           label:'📊 Vandstand'    },
+  { p:'Temperature',        label:'🌡️ Lufttemp.'    },
+  { p:'SeaSurfaceTemperature', label:'🌡️ Havtemp.'  },
+];
+
+// Variabler til JSON-data
+const FCOO_VARS = [
+  'SeaSurfaceCurrent',
+  'SeaSurfaceCurrentSpeed',
+  'SeaSurfaceTemperature',
+  'SeaSurfaceSalinity',
+  'Sealevel',
+  'WaveHeight',
+  'WavePeriod',
+  'WindSpeed',
+  'AirTemperature',
+  'Visibility',
+  'Precipitation',
+  'TotalCloudCover',
+];
+
+// Gem FCOO tidsserie-data
+let _fcooData  = {};
+let _fcooHarData = false; // om FCOO returnerede data for dette sted
+let _aktueltFcooIdx = 0;
+let _fcooStrømUU = null, _fcooStrømVV = null; // til kort-pil
+
+// ── Vind-vurdering ────────────────────────────────────────────
 function vindVurdering(ms) {
   if (ms <  3) return ["grøn", "Vindstille / svag vind",  "Ideelle forhold"];
   if (ms <  8) return ["grøn", "Let til moderat vind",    "Gode sejlforhold"];
@@ -356,10 +503,6 @@ function vindVurdering(ms) {
   if (ms < 17) return ["gul",  "Hård vind",               "Kun for erfarne"];
   if (ms < 21) return ["rød",  "Storm",                   "Undgå sejlads"];
   return             ["rød",  "Alvorlig storm / orkan",  "FARLIGT – bliv i havn"];
-}
-function vindFarveKlasse(ms) {
-  const [k] = vindVurdering(ms);
-  return k === "grøn" ? "vind-grøn" : k === "gul" ? "vind-gul" : "vind-rød";
 }
 function sejladsVurdering(ms, bølge) {
   if (ms < 8  && (bølge == null || bølge < 1.0)) return ["grøn","⛵","IDEELLE SEJLFORHOLD"];
@@ -375,40 +518,24 @@ function set(id, v) { document.getElementById(id).textContent = v; }
 let kort = null;
 let kortLat = null, kortLon = null;
 let vindMarkør = null, posMarkør = null, havneLag = null;
-let vindCanvas = null;
-let ruteLinie = null, rutePunkter = [], ruteTegner = false;
-
-// Lag-referencer
+let strømMarkør = null;
 let lagOSM, lagSeamarks, lagDybde, lagVind;
+let ruteLinie = null, rutePunkter = [], ruteTegner = false;
 
 function initKort(lat, lon) {
   if (!kort) {
     kort = L.map('kort', { zoomControl:true }).setView([lat, lon], 11);
-
-    // Basis-lag
     lagOSM = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a>',
-      maxZoom: 18,
+      attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a>', maxZoom:18,
     });
-
-    // OpenSeaMap seamark (bøjer, fyr, afmærkning)
     lagSeamarks = L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', {
-      attribution: '© <a href="https://openseamap.org">OpenSeaMap</a>',
-      opacity: 0.9, maxZoom: 18,
+      attribution: '© <a href="https://openseamap.org">OpenSeaMap</a>', opacity:0.9, maxZoom:18,
     });
-
-    // EMODnet havdybder
     lagDybde = L.tileLayer('https://tiles.emodnet-bathymetry.eu/2020/baselayer/web_mercator/{z}/{x}/{y}.png', {
-      attribution: '© <a href="https://emodnet.ec.europa.eu">EMODnet</a>',
-      opacity: 0.55, maxZoom: 11,
+      attribution: '© <a href="https://emodnet.ec.europa.eu">EMODnet</a>', opacity:0.55, maxZoom:11,
     });
-
-    // Vind canvas-overlay (oprettes senere med data)
     lagVind = L.layerGroup();
-
     lagOSM.addTo(kort);
-
-    // Lagkontrol
     L.control.layers(
       { "OpenStreetMap": lagOSM },
       {
@@ -418,8 +545,6 @@ function initKort(lat, lon) {
       },
       { collapsed: false, position: 'topright' }
     ).addTo(kort);
-
-    // Klik på kort → tilføj rute-punkt hvis tegner er aktiv
     kort.on('click', kortKlik);
   } else {
     kort.setView([lat, lon], 11);
@@ -434,11 +559,9 @@ function initKort(lat, lon) {
 function opdaterVindMarkør(lat, lon, windDir, windMs) {
   if (vindMarkør) { vindMarkør.remove(); vindMarkør = null; }
   if (posMarkør)  { posMarkør.remove();  posMarkør  = null; }
-
   const [kat] = vindVurdering(windMs);
   const farve = kat === "grøn" ? "#4ddb6a" : kat === "gul" ? "#f0c040" : "#ff6b6b";
-  const rot   = (windDir + 180) % 360; // pil peger downwind
-
+  const rot   = (windDir + 180) % 360;
   const svg = `
     <div style="text-align:center;line-height:1;">
       <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="-30 -30 60 60">
@@ -454,13 +577,11 @@ function opdaterVindMarkør(lat, lon, windDir, windMs) {
         ${windMs.toFixed(1)} m/s
       </div>
     </div>`;
-
   vindMarkør = L.marker([lat, lon], {
     icon: L.divIcon({ html:svg, iconSize:[60,78], iconAnchor:[30,30], className:'' }),
     zIndexOffset: 1000,
   }).addTo(kort)
     .bindPopup(`<b>Vind</b><br>${windMs.toFixed(1)} m/s · ${(windMs*1.944).toFixed(1)} knob<br>Fra ${Math.round(windDir)}° (${vindretning(windDir)})`);
-
   const posSvg = `<div style="width:12px;height:12px;border-radius:50%;background:#3a8fe8;border:2px solid white;box-shadow:0 0 8px rgba(58,143,232,0.8);"></div>`;
   posMarkør = L.marker([lat, lon], {
     icon: L.divIcon({ html:posSvg, iconSize:[12,12], iconAnchor:[6,6], className:'' }),
@@ -468,80 +589,80 @@ function opdaterVindMarkør(lat, lon, windDir, windMs) {
   }).addTo(kort);
 }
 
-// ── Vindkort canvas-overlay ───────────────────────────────────
-async function opdaterVindCanvas(centerLat, centerLon, hourlyData, timeIdx) {
-  lagVind.clearLayers();
+// ── Havstrøm-pil på kortet ────────────────────────────────────
+function opdaterStrømMarkør(lat, lon, uu, vv) {
+  if (strømMarkør) { strømMarkør.remove(); strømMarkør = null; }
+  const speed = Math.sqrt(uu*uu + vv*vv);
+  if (speed < 0.01) return;
+  // Strøm-retning: hvortil den løber (matematisk → nautisk)
+  const dir = (Math.atan2(uu, vv) * 180 / Math.PI + 360) % 360;
+  const farve = speed < 0.5 ? '#64b5f6' : speed < 1.5 ? '#29b6f6' : '#0288d1';
+  const svg = `
+    <div style="text-align:center;line-height:1;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="-26 -26 52 52">
+        <circle r="22" fill="rgba(2,40,80,0.82)" stroke="${farve}" stroke-width="2" stroke-dasharray="4,3"/>
+        <g transform="rotate(${dir})">
+          <line x1="0" y1="16" x2="0" y2="-12" stroke="${farve}" stroke-width="2.5" stroke-linecap="round"/>
+          <polygon points="0,-20 5,-8 0,-12 -5,-8" fill="${farve}"/>
+        </g>
+      </svg>
+      <div style="color:${farve};font-size:10px;font-weight:700;
+                  background:rgba(2,20,50,0.82);border-radius:5px;
+                  padding:1px 4px;margin-top:1px;display:inline-block;">
+        ${speed.toFixed(2)} kn
+      </div>
+    </div>`;
+  // Placer lidt offset fra vindmarkøren
+  const offsetLat = lat + 0.03;
+  strømMarkør = L.marker([offsetLat, lon], {
+    icon: L.divIcon({ html:svg, iconSize:[52,66], iconAnchor:[26,26], className:'' }),
+    zIndexOffset: 800,
+  }).addTo(kort)
+    .bindPopup(`<b>Havstrøm (FCOO)</b><br>${speed.toFixed(2)} knob<br>Retning ${Math.round(dir)}° (${vindretning(dir)})`);
+}
 
-  // Gitter: 5×5 punkter over ~180 km × ~130 km
+// ── Vindkort canvas ───────────────────────────────────────────
+async function opdaterVindCanvas(centerLat, centerLon) {
+  lagVind.clearLayers();
   const dLat = 0.8, dLon = 1.2;
   const gitter = [];
   for (let r = -2; r <= 2; r++)
     for (let c = -2; c <= 2; c++)
-      gitter.push([centerLat + r * dLat, centerLon + c * dLon]);
-
-  // Hent vind for alle gitter-punkter parallelt
-  const resultater = await Promise.allSettled(
+      gitter.push([centerLat + r*dLat, centerLon + c*dLon]);
+  const res = await Promise.allSettled(
     gitter.map(([la, lo]) =>
       fetch(`https://api.open-meteo.com/v1/forecast?latitude=${la}&longitude=${lo}&current=wind_speed_10m&wind_speed_unit=ms&forecast_days=1`)
-        .then(r => r.json())
-        .then(d => ({ lat: la, lon: lo, ms: d.current?.wind_speed_10m ?? null }))
+        .then(r => r.json()).then(d => ({ lat:la, lon:lo, ms: d.current?.wind_speed_10m ?? null }))
     )
   );
-
-  const punkter = resultater
-    .filter(r => r.status === 'fulfilled' && r.value.ms !== null)
-    .map(r => r.value);
-
-  if (!punkter.length) return;
-
-  // Tegn farve-cirkler for hvert gitter-punkt
-  for (const p of punkter) {
-    const ms = p.ms;
+  for (const r of res) {
+    if (r.status !== 'fulfilled' || r.value.ms === null) continue;
+    const { lat, lon, ms } = r.value;
     let farve;
     if      (ms < 5)  farve = 'rgba(0,160,255,0.40)';
     else if (ms < 8)  farve = 'rgba(0,220,120,0.42)';
     else if (ms < 12) farve = 'rgba(255,210,0,0.44)';
     else if (ms < 18) farve = 'rgba(255,120,0,0.46)';
     else              farve = 'rgba(220,0,0,0.50)';
-
-    L.circle([p.lat, p.lon], {
-      radius:      75000,   // 75 km, passer til gitter-afstanden
-      color:       'transparent',
-      fillColor:   farve,
-      fillOpacity: 1,
-      interactive: false,
-    }).addTo(lagVind);
-
-    // Lille vind-label i midten
-    L.marker([p.lat, p.lon], {
-      icon: L.divIcon({
-        html: `<div style="color:white;font-size:10px;font-weight:700;
-                           text-shadow:0 0 4px #000;white-space:nowrap;">
-                 ${ms.toFixed(1)}
-               </div>`,
-        iconSize: [30,14], iconAnchor:[15,7], className:'',
-      }),
-      interactive: false,
-      zIndexOffset: -100,
+    L.circle([lat, lon], { radius:75000, color:'transparent', fillColor:farve, fillOpacity:1, interactive:false }).addTo(lagVind);
+    L.marker([lat, lon], {
+      icon: L.divIcon({ html:`<div style="color:white;font-size:10px;font-weight:700;text-shadow:0 0 4px #000;white-space:nowrap;">${ms.toFixed(1)}</div>`,
+        iconSize:[30,14], iconAnchor:[15,7], className:'' }),
+      interactive:false, zIndexOffset:-100,
     }).addTo(lagVind);
   }
-
   document.getElementById('vind-legende').style.display = 'block';
 }
 
-// ── Havne via Overpass ────────────────────────────────────────
+// ── Havne ─────────────────────────────────────────────────────
 async function hentHavne(lat, lon) {
   if (havneLag) { havneLag.clearLayers(); }
   else { havneLag = L.layerGroup().addTo(kort); }
-
   const q = `[out:json][timeout:20];(node["leisure"="marina"](around:60000,${lat},${lon});node["harbour"](around:60000,${lat},${lon});way["leisure"="marina"](around:60000,${lat},${lon});way["harbour"](around:60000,${lat},${lon}););out center 120;`;
   try {
     const res  = await fetch('https://overpass-api.de/api/interpreter', { method:'POST', body:q });
     const data = await res.json();
-    const icon = L.divIcon({
-      html: `<div style="font-size:20px;line-height:1;filter:drop-shadow(0 1px 3px #000);">⚓</div>`,
-      iconSize:[22,22], iconAnchor:[11,18], className:'',
-    });
+    const icon = L.divIcon({ html:`<div style="font-size:20px;line-height:1;filter:drop-shadow(0 1px 3px #000);">⚓</div>`, iconSize:[22,22], iconAnchor:[11,18], className:'' });
     for (const el of data.elements) {
       const eLat = el.lat ?? el.center?.lat;
       const eLon = el.lon ?? el.center?.lon;
@@ -549,8 +670,7 @@ async function hentHavne(lat, lon) {
       const navn  = el.tags?.name || "Havn / Marina";
       const type  = el.tags?.leisure === 'marina' ? 'Marina' : 'Havn';
       const link  = el.tags?.website ? `<br><a href="${el.tags.website}" target="_blank" style="color:#7ecef4;">Hjemmeside</a>` : '';
-      L.marker([eLat, eLon], { icon }).addTo(havneLag)
-        .bindPopup(`<b>${navn}</b><br>${type}${link}`);
+      L.marker([eLat, eLon], { icon }).addTo(havneLag).bindPopup(`<b>${navn}</b><br>${type}${link}`);
     }
   } catch (_) {}
 }
@@ -560,12 +680,10 @@ function toggleRute() {
   ruteTegner = !ruteTegner;
   const knap = document.getElementById('rute-start');
   if (ruteTegner) {
-    knap.textContent = '⏹ Stop tegning';
-    knap.classList.add('aktiv');
+    knap.textContent = '⏹ Stop tegning'; knap.classList.add('aktiv');
     kort.getContainer().style.cursor = 'crosshair';
   } else {
-    knap.textContent = '✏️ Tegn sejlrute';
-    knap.classList.remove('aktiv');
+    knap.textContent = '✏️ Tegn sejlrute'; knap.classList.remove('aktiv');
     kort.getContainer().style.cursor = '';
   }
 }
@@ -574,52 +692,228 @@ function kortKlik(e) {
   rutePunkter.push([e.latlng.lat, e.latlng.lng]);
   if (ruteLinie) { ruteLinie.remove(); ruteLinie = null; }
   if (rutePunkter.length > 1) {
-    ruteLinie = L.polyline(rutePunkter, {
-      color: '#7ecef4', weight: 3, dashArray: '8,5',
-    }).addTo(kort);
+    ruteLinie = L.polyline(rutePunkter, { color:'#7ecef4', weight:3, dashArray:'8,5' }).addTo(kort);
     const afstand = ruteAfstandNm(rutePunkter);
     document.getElementById('rute-afstand').textContent =
       `Rute: ${afstand.toFixed(2)} sømil (${(afstand*1.852).toFixed(1)} km)`;
   }
-  // Markér punkt
-  L.circleMarker([e.latlng.lat, e.latlng.lng], {
-    radius:5, color:'#7ecef4', fillColor:'#fff', fillOpacity:1, weight:2,
-  }).addTo(kort);
+  L.circleMarker([e.latlng.lat, e.latlng.lng], { radius:5, color:'#7ecef4', fillColor:'#fff', fillOpacity:1, weight:2 }).addTo(kort);
 }
 function sletRute() {
   if (ruteLinie) { ruteLinie.remove(); ruteLinie = null; }
-  rutePunkter = [];
-  ruteTegner  = false;
+  rutePunkter = []; ruteTegner = false;
   const knap = document.getElementById('rute-start');
-  knap.textContent = '✏️ Tegn sejlrute';
-  knap.classList.remove('aktiv');
+  knap.textContent = '✏️ Tegn sejlrute'; knap.classList.remove('aktiv');
   kort.getContainer().style.cursor = '';
   document.getElementById('rute-afstand').textContent = 'Ingen rute';
-  // Fjern punkt-markører – genindlæs kort-lag
   hentHavne(kortLat, kortLon);
 }
 function ruteAfstandNm(punkter) {
   let meter = 0;
   for (let i = 1; i < punkter.length; i++) {
-    const [la1, lo1] = punkter[i-1], [la2, lo2] = punkter[i];
+    const [la1,lo1] = punkter[i-1], [la2,lo2] = punkter[i];
     const R = 6371000;
-    const dLat = (la2-la1)*Math.PI/180, dLon = (lo2-lo1)*Math.PI/180;
+    const dLat=(la2-la1)*Math.PI/180, dLon=(lo2-lo1)*Math.PI/180;
     const a = Math.sin(dLat/2)**2 + Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dLon/2)**2;
     meter += R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   }
-  return meter / 1852; // → sømil
+  return meter / 1852;
 }
 
-// ── 5-dages forecast UI ───────────────────────────────────────
-let _hourlyData = null, _timeIdx = 0;
-let _valgtDag = 0;
+// ── FCOO sektion toggle ───────────────────────────────────────
+let _fcooSektionVis = true;
+function toggleFcooSektion() {
+  _fcooSektionVis = !_fcooSektionVis;
+  document.getElementById('fcoo-sektion').style.display = _fcooSektionVis ? '' : 'none';
+  document.getElementById('fcoo-toggle-knap').textContent = _fcooSektionVis ? 'Skjul' : 'Vis';
+}
+
+// ── FCOO plots ────────────────────────────────────────────────
+let _aktivPlotParam = null;
+function bygPlotFaner(lat, lon) {
+  const faner = document.getElementById('plot-faner');
+  faner.innerHTML = '';
+  for (const { p, label } of FCOO_PLOT_PARAMS) {
+    const btn = document.createElement('button');
+    btn.className = 'plot-fane';
+    btn.textContent = label;
+    btn.onclick = () => visFcooPlot(p, lat, lon);
+    faner.appendChild(btn);
+  }
+  document.getElementById('fcoo-plots').style.display = 'block';
+  // Vis Wind som standard
+  visFcooPlot('Wind', lat, lon);
+}
+
+function visFcooPlot(p, lat, lon) {
+  _aktivPlotParam = p;
+  document.querySelectorAll('.plot-fane').forEach(btn => {
+    const label = FCOO_PLOT_PARAMS.find(x => x.p === p)?.label ?? p;
+    btn.classList.toggle('aktiv', btn.textContent === label);
+  });
+  const container = document.getElementById('plot-container');
+  container.innerHTML = '<span class="plot-loading">Henter FCOO-prognose…</span>';
+  const url = `${FCOO_PLOT}?p=${p}&x=${lon.toFixed(4)}&y=${lat.toFixed(4)}`;
+  const img = new Image();
+  img.onload  = () => { container.innerHTML = ''; container.appendChild(img); img.style.maxWidth='100%'; img.style.borderRadius='8px'; };
+  img.onerror = () => { container.innerHTML = `<span class="plot-fejl">Ingen FCOO-data for "${p}" ved dette sted</span>`; };
+  img.src = url;
+  img.alt = `FCOO prognose: ${p}`;
+}
+
+// ── Hent FCOO JSON-data ───────────────────────────────────────
+async function hentFCOO(lat, lon) {
+  _fcooData = {};
+  _fcooHarData = false;
+
+  // Hent alle variabler parallelt – ignorer fejl individuelt
+  const results = await Promise.allSettled(
+    FCOO_VARS.map(v =>
+      fetch(`${FCOO_API}?variables=${v}&lat=${lat}&lon=${lon}`)
+        .then(r => {
+          if (!r.ok) return null;
+          return r.json();
+        })
+        .then(d => d ? { v, d } : null)
+        .catch(() => null)
+    )
+  );
+
+  for (const r of results) {
+    if (r.status === 'fulfilled' && r.value !== null) {
+      _fcooData[r.value.v] = r.value.d;
+      _fcooHarData = true;
+    }
+  }
+
+  if (!_fcooHarData) {
+    document.getElementById('fcoo-grid').style.display  = 'none';
+    document.getElementById('fcoo-ingen').style.display = 'block';
+    document.getElementById('fcoo-plots').style.display = 'none';
+    return;
+  }
+
+  document.getElementById('fcoo-ingen').style.display = 'none';
+  document.getElementById('fcoo-grid').style.display  = '';
+
+  // Find nærmeste tidspunkt
+  const nu    = new Date();
+  const nuISO = nu.toISOString();
+
+  function nærmestIdx(tider) {
+    if (!tider) return 0;
+    let best = 0;
+    for (let i = 0; i < tider.length; i++) {
+      if (tider[i] <= nuISO) best = i;
+    }
+    return best;
+  }
+
+  // Havstrøm
+  const strøm = _fcooData['SeaSurfaceCurrent'];
+  if (strøm?.SeaSurfaceCurrent?.uu && strøm.SeaSurfaceCurrent.vv) {
+    const uu_obj = strøm.SeaSurfaceCurrent.uu;
+    const vv_obj = strøm.SeaSurfaceCurrent.vv;
+    const idx  = nærmestIdx(uu_obj.time);
+    const uu   = uu_obj.data[idx] ?? 0;
+    const vv   = vv_obj.data[idx] ?? 0;
+    const speed = Math.sqrt(uu*uu + vv*vv);
+    const dir   = (Math.atan2(uu, vv) * 180 / Math.PI + 360) % 360;
+    _fcooStrømUU = uu; _fcooStrømVV = vv;
+    set('fcoo-strøm-ms',  speed.toFixed(2));
+    set('fcoo-strøm-ret', `${Math.round(dir)}° (${vindretning(dir)})`);
+    set('fcoo-strøm-u',   `${uu.toFixed(3)} kn`);
+    set('fcoo-strøm-v',   `${vv.toFixed(3)} kn`);
+    opdaterStrømMarkør(lat, lon, uu, vv);
+  } else {
+    _fcooStrømUU = null; _fcooStrømVV = null;
+    set('fcoo-strøm-ms', 'Ingen data'); set('fcoo-strøm-ret', '–'); set('fcoo-strøm-u','–'); set('fcoo-strøm-v','–');
+  }
+
+  // Havtemperatur
+  const havt = _fcooData['SeaSurfaceTemperature'];
+  const havtArr = havt?.SeaSurfaceTemperature?.data;
+  set('fcoo-havtemp', havtArr ? `${havtArr[nærmestIdx(havt.SeaSurfaceTemperature.time)].toFixed(1)} °C` : '–');
+
+  // Saltindhold
+  const salt = _fcooData['SeaSurfaceSalinity'];
+  const saltArr = salt?.SeaSurfaceSalinity?.data;
+  set('fcoo-salt', saltArr ? `${saltArr[nærmestIdx(salt.SeaSurfaceSalinity.time)].toFixed(1)} PSU` : '–');
+
+  // Vandstand
+  const vand = _fcooData['Sealevel'];
+  const vandArr = vand?.Sealevel?.data;
+  set('fcoo-vandstand', vandArr ? `${vandArr[nærmestIdx(vand.Sealevel.time)].toFixed(2)} m` : '–');
+
+  // Bølger
+  const boelge = _fcooData['WaveHeight'];
+  const boelgeArr = boelge?.WaveHeight?.data;
+  set('fcoo-bølge', boelgeArr ? `${boelgeArr[nærmestIdx(boelge.WaveHeight.time)].toFixed(1)} m` : '–');
+
+  const boelgep = _fcooData['WavePeriod'];
+  const boelgepArr = boelgep?.WavePeriod?.data;
+  set('fcoo-bølgep', boelgepArr ? `${Math.round(boelgepArr[nærmestIdx(boelgep.WavePeriod.time)])} s` : '–');
+
+  // Vind FCOO
+  const vindF = _fcooData['WindSpeed'];
+  const vindFArr = vindF?.WindSpeed?.data;
+  set('fcoo-vind', vindFArr ? `${vindFArr[nærmestIdx(vindF.WindSpeed.time)].toFixed(1)} m/s` : '–');
+
+  // Lufttemperatur FCOO
+  const luftt = _fcooData['AirTemperature'];
+  const lufttArr = luftt?.AirTemperature?.data;
+  set('fcoo-lufttemp', lufttArr ? `${lufttArr[nærmestIdx(luftt.AirTemperature.time)].toFixed(1)} °C` : '–');
+
+  // Sigtbarhed
+  const sigtF = _fcooData['Visibility'];
+  const sigtArr = sigtF?.Visibility?.data;
+  set('fcoo-sigt', sigtArr ? `${(sigtArr[nærmestIdx(sigtF.Visibility.time)]/1000).toFixed(1)} km` : '–');
+
+  // Nedbør
+  const nedboer = _fcooData['Precipitation'];
+  const nedboerArr = nedboer?.Precipitation?.data;
+  set('fcoo-nedboer', nedboerArr ? `${nedboerArr[nærmestIdx(nedboer.Precipitation.time)].toFixed(1)} mm/t` : '–');
+
+  // Skydække
+  const sky = _fcooData['TotalCloudCover'];
+  const skyArr = sky?.TotalCloudCover?.data;
+  set('fcoo-sky', skyArr ? `${Math.round(skyArr[nærmestIdx(sky.TotalCloudCover.time)])} %` : '–');
+
+  // Byg plot-faner
+  bygPlotFaner(lat, lon);
+
+  // Gem til tabel
+  _aktueltFcooIdx = 0;
+}
+
+// Hent FCOO strøm for en given tid (til forecast-tabel)
+function fcooStrømForTid(isoTid) {
+  const strøm = _fcooData['SeaSurfaceCurrent'];
+  if (!strøm?.SeaSurfaceCurrent?.uu) return null;
+  const tider = strøm.SeaSurfaceCurrent.uu.time;
+  // Find nærmeste tidspunkt
+  let best = 0, bestDiff = Infinity;
+  const mål = new Date(isoTid).getTime();
+  for (let i = 0; i < tider.length; i++) {
+    const diff = Math.abs(new Date(tider[i]).getTime() - mål);
+    if (diff < bestDiff) { bestDiff = diff; best = i; }
+  }
+  if (bestDiff > 3600000 * 2) return null; // > 2 timer fra → ingen match
+  const uu = strøm.SeaSurfaceCurrent.uu.data[best] ?? 0;
+  const vv = strøm.SeaSurfaceCurrent.vv.data[best] ?? 0;
+  const speed = Math.sqrt(uu*uu + vv*vv);
+  const dir   = (Math.atan2(uu, vv) * 180 / Math.PI + 360) % 360;
+  return { speed, dir };
+}
+
+// ── 5-dages oversigt ──────────────────────────────────────────
+let _hourlyData = null;
+let _valgtDag   = 0;
 
 function bygDagsOversigt(hourly) {
-  const tider = hourly.time;
+  const tider   = hourly.time;
   const dagGrid = document.getElementById('dag-grid');
   dagGrid.innerHTML = '';
-
-  // Saml dagsoversigt
   const dage = {};
   for (let i = 0; i < tider.length; i++) {
     const dato = tider[i].slice(0,10);
@@ -629,18 +923,15 @@ function bygDagsOversigt(hourly) {
     if (hourly.temperature_2m) dage[dato].temps.push(hourly.temperature_2m[i]);
     dage[dato].koder.push(hourly.weather_code[i]);
   }
-
-  const datoListe = Object.keys(dage).slice(0, 5);
-  datoListe.forEach((dato, idx) => {
-    const d   = dage[dato];
-    const dag = new Date(dato + 'T12:00:00');
+  Object.keys(dage).slice(0,5).forEach((dato, idx) => {
+    const d = dage[dato];
+    const dag = new Date(dato+'T12:00:00');
     const dagNavn = dag.toLocaleDateString('da-DK', { weekday:'short', day:'numeric', month:'short' });
     const vejrKode = d.koder[Math.floor(d.koder.length/2)];
     const vejrIkon = (VEJRKODER[vejrKode] ?? "❓").split(" ")[0];
     const tempMax  = d.temps.length ? Math.max(...d.temps).toFixed(0) : '–';
     const tempMin  = d.temps.length ? Math.min(...d.temps).toFixed(0) : '–';
     const vindFarve = d.vindMax < 11 ? '#4ddb6a' : d.vindMax < 17 ? '#f0c040' : '#ff6b6b';
-
     const el = document.createElement('div');
     el.className = 'dag-kort' + (idx === 0 ? ' valgt' : '');
     el.dataset.dato = dato;
@@ -648,8 +939,7 @@ function bygDagsOversigt(hourly) {
       <div class="dag-dato">${dagNavn}</div>
       <div class="dag-ikon">${vejrIkon}</div>
       <div class="dag-vind" style="color:${vindFarve}">${d.vindMin.toFixed(1)}–${d.vindMax.toFixed(1)} m/s</div>
-      <div class="dag-temp">${tempMin}° / ${tempMax}°</div>
-    `;
+      <div class="dag-temp">${tempMin}° / ${tempMax}°</div>`;
     el.onclick = () => vælgDag(dato, idx);
     dagGrid.appendChild(el);
   });
@@ -657,62 +947,66 @@ function bygDagsOversigt(hourly) {
 
 function vælgDag(dato, idx) {
   _valgtDag = idx;
-  document.querySelectorAll('.dag-kort').forEach((el,i) =>
-    el.classList.toggle('valgt', i === idx));
+  document.querySelectorAll('.dag-kort').forEach((el,i) => el.classList.toggle('valgt', i === idx));
   visForecastForDag(dato);
 }
 
 function visForecastForDag(dato) {
   if (!_hourlyData) return;
   const hourly = _hourlyData;
-  const tider  = hourly.time;
   const tbody  = document.getElementById('forecast-rækker');
   tbody.innerHTML = '';
-
-  const dag = new Date(dato + 'T12:00:00');
+  const dag = new Date(dato+'T12:00:00');
   document.getElementById('forecast-titel').textContent =
     'Forecast – ' + dag.toLocaleDateString('da-DK', { weekday:'long', day:'numeric', month:'long' });
-
-  for (let i = 0; i < tider.length; i++) {
-    if (!tider[i].startsWith(dato)) continue;
-    const d      = new Date(tider[i]);
-    const tidStr = d.toLocaleTimeString('da-DK', { hour:'2-digit', minute:'2-digit' });
-    const ws = hourly.wind_speed_10m[i];
-    const wg = hourly.wind_gusts_10m[i];
-    const wd = hourly.wind_direction_10m[i];
-    const wh = hourly.wave_height?.[i];
-    const wk = hourly.weather_code[i];
+  for (let i = 0; i < hourly.time.length; i++) {
+    if (!hourly.time[i].startsWith(dato)) continue;
+    const d   = new Date(hourly.time[i]);
+    const tid = d.toLocaleTimeString('da-DK', { hour:'2-digit', minute:'2-digit' });
+    const ws  = hourly.wind_speed_10m[i];
+    const wg  = hourly.wind_gusts_10m[i];
+    const wd  = hourly.wind_direction_10m[i];
+    const wh  = hourly.wave_height?.[i];
+    const wk  = hourly.weather_code[i];
     const [vKat] = vindVurdering(ws);
-    const fKlasse = vKat === "grøn" ? "vind-grøn" : vKat === "gul" ? "vind-gul" : "vind-rød";
+    const fKl = vKat==='grøn'?'vind-grøn': vKat==='gul'?'vind-gul':'vind-rød';
     const vejrIkon = (VEJRKODER[wk] ?? "❓").split(" ")[0];
+    // FCOO strøm for dette tidspunkt
+    const strøm = fcooStrømForTid(hourly.time[i]);
+    const strømTekst = strøm ? `${strøm.speed.toFixed(2)}kn ${vindretning(strøm.dir)}` : '–';
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${tidStr}</td>
-      <td class="${fKlasse}" style="font-weight:600;">${ws.toFixed(1)}</td>
+      <td>${tid}</td>
+      <td class="${fKl}" style="font-weight:600;">${ws.toFixed(1)}</td>
       <td>${wg.toFixed(1)}</td>
       <td>${vindretning(wd)}</td>
-      <td>${wh != null ? wh.toFixed(1)+' m' : '–'}</td>
+      <td>${wh!=null?wh.toFixed(1)+' m':'–'}</td>
       <td>${vejrIkon}</td>
-    `;
+      <td style="color:#64b5f6;font-size:0.8rem;">${strømTekst}</td>`;
     tbody.appendChild(tr);
   }
 }
 
-// ── Hent vejr + vis alt ───────────────────────────────────────
+// ── Hent alt vejr ─────────────────────────────────────────────
 async function hentOgVis(lat, lon, stednavn) {
+  document.getElementById('fejl').style.display = 'none';
   const params = new URLSearchParams({
     latitude: lat, longitude: lon,
     current:  "temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,surface_pressure,relative_humidity_2m,visibility",
     hourly:   "temperature_2m,wind_speed_10m,wind_direction_10m,wind_gusts_10m,wave_height,wave_period,wave_direction,weather_code",
     forecast_days: 5, wind_speed_unit: "ms", timezone: "Europe/Copenhagen",
   });
-  const res  = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`);
-  const data = await res.json();
+
+  // Hent Open-Meteo og FCOO parallelt
+  const [omRes] = await Promise.all([
+    fetch(`https://api.open-meteo.com/v1/forecast?${params}`).then(r => r.json()),
+    hentFCOO(lat, lon),
+    hentHavne(lat, lon),
+    opdaterVindCanvas(lat, lon),
+  ]);
 
   initKort(lat, lon);
-  visResultat(data, stednavn, lat, lon);
-  hentHavne(lat, lon);
-  opdaterVindCanvas(lat, lon, data.hourly, _timeIdx);
+  visResultat(omRes, stednavn, lat, lon);
 }
 
 // ── Vis aktuelt vejr ──────────────────────────────────────────
@@ -721,22 +1015,18 @@ function visResultat(data, stednavn, lat, lon) {
   const hourly = data.hourly;
   _hourlyData  = hourly;
 
-  const nu    = new Date();
-  const nuStr = nu.toISOString().slice(0,13) + ":00";
-  const tider = hourly.time;
+  const nu     = new Date();
+  const nuStr  = nu.toISOString().slice(0,13) + ":00";
   let idx = 0;
-  for (let i = 0; i < tider.length; i++) {
-    if (tider[i] >= nuStr) { idx = i; break; }
-  }
-  _timeIdx = idx;
+  for (let i = 0; i < hourly.time.length; i++) { if (hourly.time[i] >= nuStr) { idx = i; break; } }
 
   const windMs  = c.wind_speed_10m;
   const windDir = c.wind_direction_10m;
   const gustMs  = c.wind_gusts_10m;
   const [vKat, vNavn, vRåd] = vindVurdering(windMs);
-  const fKlasse = vKat === "grøn" ? "vind-grøn" : vKat === "gul" ? "vind-gul" : "vind-rød";
+  const fKl = vKat==='grøn'?'vind-grøn': vKat==='gul'?'vind-gul':'vind-rød';
 
-  const bølgeH = hourly.wave_height?.[idx]   ?? null;
+  const bølgeH = hourly.wave_height?.[idx]    ?? null;
   const bølgeP = hourly.wave_period?.[idx]    ?? null;
   const bølgeD = hourly.wave_direction?.[idx] ?? null;
 
@@ -751,14 +1041,12 @@ function visResultat(data, stednavn, lat, lon) {
   set("tryk", `${Math.round(c.surface_pressure)} hPa`);
   set("fugt", `${Math.round(c.relative_humidity_2m)} %`);
   set("sigt", c.visibility != null ? `${(c.visibility/1000).toFixed(1)} km` : "–");
-
   set("vind-ms",   windMs.toFixed(1));
   set("vind-knob", `(${(windMs*1.944).toFixed(1)} knob)`);
   set("vind-retning", `${Math.round(windDir)}°  ${vindretning(windDir)}`);
   set("vindstød",  `${gustMs.toFixed(1)} m/s  (${(gustMs*1.944).toFixed(1)} knob)`);
   const vurEl = document.getElementById("vind-vurdering");
-  vurEl.textContent = vNavn;
-  vurEl.className   = `værdi ${fKlasse}`;
+  vurEl.textContent = vNavn; vurEl.className = `værdi ${fKl}`;
   set("vind-råd", vRåd);
 
   if (bølgeH != null) {
@@ -773,16 +1061,12 @@ function visResultat(data, stednavn, lat, lon) {
   const [vurFarve, vurIkon, vurTekst] = sejladsVurdering(windMs, bølgeH);
   const boks = document.getElementById("vurdering-boks");
   boks.className = `vurdering-boks ${vurFarve}`;
-  set("vurdering-ikon",  vurIkon);
+  set("vurdering-ikon", vurIkon);
   set("vurdering-tekst", vurTekst);
 
   opdaterVindMarkør(lat, lon, windDir, windMs);
   bygDagsOversigt(hourly);
-
-  // Vis dagens forecast som standard
-  const idagDato = tider[idx].slice(0,10);
-  visForecastForDag(idagDato);
-
+  visForecastForDag(hourly.time[idx].slice(0,10));
   document.getElementById('resultat').style.display = 'block';
 }
 
@@ -814,8 +1098,8 @@ function brugGPS() {
         try {
           const n = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=da`).then(r=>r.json());
           const a = n.address;
-          const by = a?.city || a?.town || a?.village || a?.municipality || '';
-          stednavn  = by ? `${by}, ${a?.country || ''}` : stednavn;
+          const by = a?.city||a?.town||a?.village||a?.municipality||'';
+          stednavn = by ? `${by}, ${a?.country||''}` : stednavn;
         } catch (_) {}
         document.getElementById('søg').value = stednavn.split(',')[0];
         await hentOgVis(lat, lon, stednavn);
@@ -834,8 +1118,7 @@ function setBusy(b) {
 }
 function visError(msg) {
   const el = document.getElementById('fejl');
-  el.textContent = "Fejl: " + msg;
-  el.style.display = 'block';
+  el.textContent = "Fejl: " + msg; el.style.display = 'block';
 }
 function sætStatus(msg) { document.getElementById('gps-status').textContent = msg; }
 
