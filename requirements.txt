@@ -1,0 +1,2 @@
+# Sejlvejr bruger kun Python standard bibliotek
+# Ingen eksterne pakker kræves
