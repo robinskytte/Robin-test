@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sejlvejr</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(160deg, #0a1628 0%, #0d2b4e 50%, #0a3d62 100%);
+      min-height: 100vh;
+      color: #e8f4fd;
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem 1rem 1rem;
+    }
+    header h1 {
+      font-size: 2rem;
+      letter-spacing: 2px;
+      color: #7ecef4;
+    }
+    header p { color: #8ab4cc; margin-top: 0.3rem; font-size: 0.9rem; }
+
+    .søg-boks {
+      display: flex;
+      gap: 0.5rem;
+      max-width: 480px;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+    }
+    .søg-boks input {
+      flex: 1;
+      padding: 0.8rem 1rem;
+      border-radius: 12px;
+      border: 1px solid #2a5f8a;
+      background: rgba(255,255,255,0.07);
+      color: #e8f4fd;
+      font-size: 1rem;
+      outline: none;
+    }
+    .søg-boks input:focus { border-color: #7ecef4; }
+    .søg-boks input::placeholder { color: #5a8aaa; }
+
+    .søg-boks button {
+      padding: 0.8rem 1.4rem;
+      border-radius: 12px;
+      border: none;
+      background: #1a7abf;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .søg-boks button:hover { background: #2a9ae0; }
+    .søg-boks button:disabled { background: #2a4a66; cursor: wait; }
+
+    #fejl {
+      text-align: center;
+      color: #ff7070;
+      padding: 0.5rem;
+      display: none;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      max-width: 960px;
+      margin: 0 auto 2rem;
+      padding: 0 1rem;
+    }
+
+    .kort {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(126,206,244,0.15);
+      border-radius: 16px;
+      padding: 1.4rem;
+      backdrop-filter: blur(6px);
+    }
+
+    .kort h2 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #5a9fbf;
+      margin-bottom: 1rem;
+    }
+
+    .stor-tal {
+      font-size: 3rem;
+      font-weight: 700;
+      line-height: 1;
+      color: #fff;
+    }
+    .enhed { font-size: 1rem; color: #8ab4cc; margin-left: 4px; }
+
+    .rækker { display: flex; flex-direction: column; gap: 0.5rem; }
+    .række {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .række:last-child { border-bottom: none; }
+    .række .label { color: #7ab0cc; font-size: 0.9rem; }
+    .række .værdi { font-weight: 600; }
+
+    /* Beaufort farver */
+    .bf-grøn  { color: #4ddb6a; }
+    .bf-gul   { color: #f0c040; }
+    .bf-rød   { color: #ff6b6b; }
+
+    /* Vurderingsboks */
+    .vurdering {
+      max-width: 960px;
+      margin: 0 auto 1.5rem;
+      padding: 0 1rem;
+    }
+    .vurdering-boks {
+      border-radius: 16px;
+      padding: 1.2rem 1.6rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .vurdering-boks.grøn  { background: rgba(40,180,70,0.2); border: 1px solid #4ddb6a; color: #4ddb6a; }
+    .vurdering-boks.gul   { background: rgba(230,180,40,0.2); border: 1px solid #f0c040; color: #f0c040; }
+    .vurdering-boks.rød   { background: rgba(220,50,50,0.2);  border: 1px solid #ff6b6b; color: #ff6b6b; }
+    .vurdering-ikon { font-size: 2rem; }
+
+    /* Forecast tabel */
+    .forecast-scroll { overflow-x: auto; }
+    .forecast-tabel {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      min-width: 480px;
+    }
+    .forecast-tabel th {
+      text-align: left;
+      color: #5a9fbf;
+      font-weight: 600;
+      padding: 0.4rem 0.6rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .forecast-tabel td {
+      padding: 0.5rem 0.6rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .forecast-tabel tr:last-child td { border-bottom: none; }
+    .forecast-tabel tr:hover td { background: rgba(255,255,255,0.04); }
+
+    .spinner {
+      text-align: center;
+      padding: 3rem;
+      color: #5a9fbf;
+      display: none;
+    }
+    .spinner::after {
+      content: '';
+      display: inline-block;
+      width: 2rem;
+      height: 2rem;
+      border: 3px solid #1a5a8a;
+      border-top-color: #7ecef4;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-left: 1rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    #resultat { display: none; }
+
+    .vejr-ikon { font-size: 3rem; }
+    .stednavn { font-size: 1.1rem; color: #7ecef4; margin-bottom: 0.3rem; }
+    .opdateret { font-size: 0.8rem; color: #4a7a99; }
+
+    @media (max-width: 500px) {
+      header h1 { font-size: 1.5rem; }
+      .stor-tal { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>⚓ Sejlvejr</h1>
+  <p>Vejrforhold til sejlads – vind, bølger og Beaufort</p>
+</header>
+
+<div class="søg-boks">
+  <input id="søg" type="text" placeholder="Havn eller by (f.eks. Skagen)" />
+  <button id="søg-knap" onclick="søgVejr()">Søg</button>
+</div>
+<div id="fejl"></div>
+<div class="spinner" id="spinner">Henter vejrdata</div>
+
+<div id="resultat">
+  <div class="vurdering">
+    <div class="vurdering-boks" id="vurdering-boks">
+      <span class="vurdering-ikon" id="vurdering-ikon">⛵</span>
+      <span id="vurdering-tekst">–</span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- Lokation & vejr -->
+    <div class="kort">
+      <h2>Sted & vejr</h2>
+      <div class="stednavn" id="stednavn">–</div>
+      <div class="opdateret" id="opdateret"></div>
+      <br>
+      <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem;">
+        <span class="vejr-ikon" id="vejr-ikon">–</span>
+        <span id="vejr-navn" style="font-size:1.1rem;"></span>
+      </div>
+      <div class="rækker">
+        <div class="række"><span class="label">Temperatur</span><span class="værdi" id="temp">–</span></div>
+        <div class="række"><span class="label">Lufttryk</span><span class="værdi" id="tryk">–</span></div>
+        <div class="række"><span class="label">Luftfugtighed</span><span class="værdi" id="fugt">–</span></div>
+        <div class="række"><span class="label">Sigtbarhed</span><span class="værdi" id="sigt">–</span></div>
+      </div>
+    </div>
+
+    <!-- Vind -->
+    <div class="kort">
+      <h2>Vind</h2>
+      <div style="display:flex; align-items:flex-end; gap:0.5rem; margin-bottom:1rem;">
+        <span class="stor-tal" id="vind-ms">–</span>
+        <span class="enhed">m/s</span>
+        <span class="enhed" id="vind-knob" style="margin-left:0.5rem;"></span>
+      </div>
+      <div class="rækker">
+        <div class="række"><span class="label">Retning</span><span class="værdi" id="vind-retning">–</span></div>
+        <div class="række"><span class="label">Vindstød</span><span class="værdi" id="vindstød">–</span></div>
+        <div class="række">
+          <span class="label">Beaufort</span>
+          <span class="værdi" id="beaufort-vis">–</span>
+        </div>
+        <div class="række"><span class="label">Råd</span><span class="værdi" id="bf-råd" style="font-size:0.85rem;text-align:right;max-width:60%;">–</span></div>
+      </div>
+    </div>
+
+    <!-- Bølger -->
+    <div class="kort" id="bølge-kort">
+      <h2>Bølger</h2>
+      <div style="display:flex; align-items:flex-end; gap:0.5rem; margin-bottom:1rem;">
+        <span class="stor-tal" id="bølge-h">–</span>
+        <span class="enhed">m</span>
+      </div>
+      <div class="rækker">
+        <div class="række"><span class="label">Periode</span><span class="værdi" id="bølge-p">–</span></div>
+        <div class="række"><span class="label">Retning</span><span class="værdi" id="bølge-dir">–</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Forecast -->
+  <div class="grid" style="grid-template-columns:1fr;">
+    <div class="kort">
+      <h2>Forecast – næste 12 timer</h2>
+      <div class="forecast-scroll">
+        <table class="forecast-tabel">
+          <thead>
+            <tr>
+              <th>Tid</th>
+              <th>Vind (m/s)</th>
+              <th>Stød (m/s)</th>
+              <th>Retning</th>
+              <th>Bølge</th>
+              <th>Bf</th>
+            </tr>
+          </thead>
+          <tbody id="forecast-rækker"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const BEAUFORT = [
+  [0,   0.3,  "Vindstille",     "Ideelt til motorbåd"],
+  [1,   1.5,  "Næsten stille",  "Kan sejles, svag vind"],
+  [2,   3.3,  "Svag vind",      "Let sejlads, god for begyndere"],
+  [3,   5.4,  "Let brise",      "God sejlads"],
+  [4,   7.9,  "Moderat brise",  "Udmærket, bølger op til 1 m"],
+  [5,  10.7,  "Frisk brise",    "God sejlads for øvede, bølger 1-2 m"],
+  [6,  13.8,  "Stiv kuling",    "Kræver erfaring – rev ind"],
+  [7,  17.1,  "Hård kuling",    "Kun for erfarne – fuldt rev"],
+  [8,  20.7,  "Storm",          "Undgå sejlads hvis muligt"],
+  [9,  24.4,  "Stærk storm",    "FARLIGT – bliv i havn"],
+  [10, 28.4,  "Fuld storm",     "MEGET FARLIGT"],
+  [11, 32.6,  "Orkan nær",      "EKSTREMT FARLIGT"],
+  [12, 999,   "Orkan",          "EKSTREMT FARLIGT"],
+];
+
+const RETNINGER = ["N","NNØ","NØ","ØNØ","Ø","ØSØ","SØ","SSØ","S","SSV","SV","VSV","V","VNV","NV","NNV"];
+
+const VEJRKODER = {
+  0:"☀️ Klar himmel", 1:"🌤️ Mest klar", 2:"⛅ Delvist skyet", 3:"☁️ Overskyet",
+  45:"🌫️ Tåge", 48:"🌫️ Rimtåge",
+  51:"🌦️ Let støvregn", 53:"🌦️ Støvregn", 55:"🌧️ Kraftig støvregn",
+  61:"🌧️ Let regn", 63:"🌧️ Regn", 65:"🌧️ Kraftig regn",
+  71:"🌨️ Let sne", 73:"🌨️ Sne", 75:"❄️ Kraftig sne",
+  80:"🌦️ Regnbyger", 81:"🌧️ Kraftige byger", 82:"⛈️ Voldsomme byger",
+  95:"⛈️ Tordenvejr", 99:"⛈️ Kraftigt tordenvejr",
+};
+
+function beaufort(ms) {
+  for (const [bf, grænse, navn, råd] of BEAUFORT)
+    if (ms <= grænse) return [bf, navn, råd];
+  return [12, "Orkan", "EKSTREMT FARLIGT"];
+}
+
+function vindretning(deg) {
+  return RETNINGER[Math.round(deg / 22.5) % 16];
+}
+
+function bfFarveKlasse(bf) {
+  if (bf <= 5) return "bf-grøn";
+  if (bf <= 6) return "bf-gul";
+  return "bf-rød";
+}
+
+function vurdering(bf, bølge) {
+  if (bf <= 3 && (bølge == null || bølge < 0.5))
+    return ["grøn", "⛵", "IDEELLE SEJLFORHOLD"];
+  if (bf <= 5 && (bølge == null || bølge < 1.5))
+    return ["grøn", "⛵", "GODE SEJLFORHOLD"];
+  if (bf <= 6 && (bølge == null || bølge < 2.5))
+    return ["gul", "⚠️", "ACCEPTABLE SEJLFORHOLD – kræver erfaring"];
+  if (bf <= 7)
+    return ["rød", "⛔", "VANSKELIGE SEJLFORHOLD – overvej at blive i havn"];
+  return ["rød", "🚨", "FRARÅDER SEJLADS – farlige forhold"];
+}
+
+function set(id, v) { document.getElementById(id).textContent = v; }
+
+async function søgVejr() {
+  const q = document.getElementById('søg').value.trim();
+  if (!q) return;
+
+  document.getElementById('fejl').style.display = 'none';
+  document.getElementById('resultat').style.display = 'none';
+  document.getElementById('spinner').style.display = 'block';
+  document.getElementById('søg-knap').disabled = true;
+
+  try {
+    // 1. Geocoding
+    const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=1&language=da`;
+    const geoRes = await fetch(geoUrl);
+    const geoData = await geoRes.json();
+    if (!geoData.results?.length) throw new Error(`Fandt ikke stedet: "${q}"`);
+    const { latitude: lat, longitude: lon, name, country } = geoData.results[0];
+
+    // 2. Vejr + marine
+    const params = new URLSearchParams({
+      latitude: lat, longitude: lon,
+      current: "temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,wind_gusts_10m,surface_pressure,relative_humidity_2m,visibility",
+      hourly: "wind_speed_10m,wind_direction_10m,wind_gusts_10m,wave_height,wave_period,wave_direction,weather_code",
+      forecast_days: 2, wind_speed_unit: "ms", timezone: "Europe/Copenhagen",
+    });
+    const vejrRes = await fetch(`https://api.open-meteo.com/v1/forecast?${params}`);
+    const vejrData = await vejrRes.json();
+
+    visResultat(vejrData, `${name}, ${country}`);
+  } catch (e) {
+    const fejl = document.getElementById('fejl');
+    fejl.textContent = "Fejl: " + e.message;
+    fejl.style.display = 'block';
+  } finally {
+    document.getElementById('spinner').style.display = 'none';
+    document.getElementById('søg-knap').disabled = false;
+  }
+}
+
+function visResultat(data, stednavn) {
+  const c = data.current;
+  const hourly = data.hourly;
+
+  // Find nuværende time-indeks
+  const nu = new Date();
+  const nuStr = nu.toISOString().slice(0,13) + ":00";
+  const tider = hourly.time;
+  let idx = 0;
+  for (let i = 0; i < tider.length; i++) {
+    if (tider[i] >= nuStr) { idx = i; break; }
+  }
+
+  // Vind
+  const windMs = c.wind_speed_10m;
+  const windDir = c.wind_direction_10m;
+  const gustMs = c.wind_gusts_10m;
+  const [bf, bfNavn, bfRåd] = beaufort(windMs);
+
+  // Bølger
+  const bølgeH = hourly.wave_height?.[idx] ?? null;
+  const bølgeP = hourly.wave_period?.[idx] ?? null;
+  const bølgeD = hourly.wave_direction?.[idx] ?? null;
+
+  // Vejrkode
+  const wkode = c.weather_code;
+  const vejrTekst = VEJRKODER[wkode] ?? "❓ Ukendt";
+  const vejrIkon = vejrTekst.split(" ")[0];
+  const vejrNavn = vejrTekst.slice(vejrIkon.length + 1);
+
+  // Vis
+  set("stednavn", stednavn);
+  set("opdateret", "Opdateret: " + nu.toLocaleTimeString("da-DK"));
+  document.getElementById("vejr-ikon").textContent = vejrIkon;
+  set("vejr-navn", vejrNavn);
+  set("temp", `${c.temperature_2m.toFixed(1)} °C  (føles som ${c.apparent_temperature.toFixed(1)} °C)`);
+  set("tryk", `${Math.round(c.surface_pressure)} hPa`);
+  set("fugt", `${Math.round(c.relative_humidity_2m)} %`);
+  set("sigt", c.visibility != null ? `${(c.visibility/1000).toFixed(1)} km` : "–");
+
+  set("vind-ms", windMs.toFixed(1));
+  set("vind-knob", `(${(windMs * 1.944).toFixed(1)} knob)`);
+  set("vind-retning", `${Math.round(windDir)}°  ${vindretning(windDir)}`);
+  set("vindstød", `${gustMs.toFixed(1)} m/s  (${(gustMs*1.944).toFixed(1)} knob)`);
+
+  const bfEl = document.getElementById("beaufort-vis");
+  bfEl.textContent = `Bf ${bf}  –  ${bfNavn}`;
+  bfEl.className = `værdi ${bfFarveKlasse(bf)}`;
+  set("bf-råd", bfRåd);
+
+  if (bølgeH != null) {
+    set("bølge-h", bølgeH.toFixed(1));
+    set("bølge-p", bølgeP != null ? `${Math.round(bølgeP)} s` : "–");
+    set("bølge-dir", bølgeD != null ? `${Math.round(bølgeD)}°  ${vindretning(bølgeD)}` : "–");
+    document.getElementById("bølge-kort").style.display = "";
+  } else {
+    document.getElementById("bølge-kort").style.display = "none";
+  }
+
+  // Vurdering
+  const [vurFarve, vurIkon, vurTekst] = vurdering(bf, bølgeH);
+  const boks = document.getElementById("vurdering-boks");
+  boks.className = `vurdering-boks ${vurFarve}`;
+  set("vurdering-ikon", vurIkon);
+  set("vurdering-tekst", vurTekst);
+
+  // Forecast
+  const tbody = document.getElementById("forecast-rækker");
+  tbody.innerHTML = "";
+  for (let i = idx; i < Math.min(idx + 12, tider.length); i++) {
+    const d = new Date(tider[i]);
+    const tidStr = d.toLocaleDateString("da-DK", {weekday:"short"})
+      + " " + d.toLocaleTimeString("da-DK", {hour:"2-digit", minute:"2-digit"});
+    const ws = hourly.wind_speed_10m[i];
+    const wg = hourly.wind_gusts_10m[i];
+    const wd = hourly.wind_direction_10m[i];
+    const wh = hourly.wave_height?.[i];
+    const [bfI] = beaufort(ws);
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${tidStr}</td>
+      <td>${ws.toFixed(1)}</td>
+      <td>${wg.toFixed(1)}</td>
+      <td>${vindretning(wd)}</td>
+      <td>${wh != null ? wh.toFixed(1) + " m" : "–"}</td>
+      <td class="${bfFarveKlasse(bfI)}" style="font-weight:700;">${bfI}</td>
+    `;
+    tbody.appendChild(tr);
+  }
+
+  document.getElementById('resultat').style.display = 'block';
+}
+
+// Søg ved Enter
+document.getElementById('søg').addEventListener('keydown', e => {
+  if (e.key === 'Enter') søgVejr();
+});
+
+// Vis straks ved load hvis URL har ?sted=...
+const url = new URL(location.href);
+const startSted = url.searchParams.get("sted");
+if (startSted) {
+  document.getElementById('søg').value = startSted;
+  søgVejr();
+}
+</script>
+</body>
+</html>
