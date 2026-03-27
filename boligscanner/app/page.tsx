@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import AddressSearch from '@/components/AddressSearch';
+import HomepageMap from '@/components/HomepageMap';
 import { DawaAutocompleteResult } from '@/lib/types';
 
 const DIMENSIONS = [
@@ -50,6 +51,14 @@ export default function HomePage() {
             Søg på f.eks. <em>Vesterbrogade 1, København</em>
           </p>
         </div>
+      </section>
+
+      {/* Divider */}
+      <div className="border-t border-gray-100" />
+
+      {/* Map section */}
+      <section className="max-w-6xl mx-auto px-6 py-12 w-full">
+        <HomepageMap />
       </section>
 
       {/* Divider */}
