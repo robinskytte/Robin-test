@@ -124,7 +124,9 @@ export interface TrendData {
 }
 
 export interface FullAnalysis {
-  address: DawaAddress;
+  // address field is kept generic — replaced with AddressResult in pages
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  address: any;
   bbr: BBRData;
   family: FamilyData;
   risk: RiskData;
