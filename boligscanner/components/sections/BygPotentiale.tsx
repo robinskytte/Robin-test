@@ -2,6 +2,7 @@
 
 import { BuildingPotentialData } from '@/lib/types';
 import DataSourceFooter from '@/components/DataSourceFooter';
+import SimulatedDataText from '@/components/SimulatedDataText';
 import BarChartComponent from '@/components/charts/BarChartComponent';
 import { formatCurrency, formatNumber } from '@/lib/scoring';
 
@@ -34,9 +35,9 @@ export default function BygPotentiale({ data }: BygPotentialeProps) {
       </div>
 
       {/* Key findings */}
-      <ul className="text-sm font-sans text-warm-gray-700 space-y-1">
-        <li>• Resterende udnyttelig areal: {formatNumber(data.remainingArea)} m²</li>
-        <li>• Estimeret udvidelsesværdi: {formatCurrency(data.estimatedExtensionValue)}</li>
+      <ul className="text-sm font-sans space-y-1">
+        <li>• <SimulatedDataText>Resterende udnyttelig areal: {formatNumber(data.remainingArea)} m²</SimulatedDataText></li>
+        <li>• <SimulatedDataText>Estimeret udvidelsesværdi: {formatCurrency(data.estimatedExtensionValue)}</SimulatedDataText></li>
       </ul>
 
       {/* Bar chart: current vs allowed */}
@@ -52,33 +53,33 @@ export default function BygPotentiale({ data }: BygPotentialeProps) {
       <div className="bg-warm-gray-50 rounded-md p-4">
         <div className="flex justify-between items-center">
           <span className="text-sm font-sans text-warm-gray-600">Resterende m² til udnyttelse</span>
-          <span className="text-lg font-semibold text-navy">{formatNumber(data.remainingArea)} m²</span>
+          <SimulatedDataText className="text-lg font-semibold">{formatNumber(data.remainingArea)} m²</SimulatedDataText>
         </div>
         <div className="flex justify-between items-center mt-2">
           <span className="text-sm font-sans text-warm-gray-600">Estimeret udvidelsesværdi</span>
-          <span className="text-lg font-semibold text-sage">{formatCurrency(data.estimatedExtensionValue)}</span>
+          <SimulatedDataText className="text-lg font-semibold">{formatCurrency(data.estimatedExtensionValue)}</SimulatedDataText>
         </div>
       </div>
 
       {/* Plan data details */}
       <div>
-        <h3 className="text-sm font-semibold font-sans text-navy mb-2">Plandata</h3>
+        <h3 className="text-sm font-semibold font-sans text-navy mb-2">Plandata <span className="text-xs text-red-400 opacity-75 font-normal">(simuleret)</span></h3>
         <div className="grid grid-cols-2 gap-3 text-sm font-sans">
           <div className="bg-warm-gray-50 rounded-md p-3">
             <p className="text-xs text-warm-gray-500">Zone</p>
-            <p className="font-semibold text-warm-gray-700">{zoneLabels[data.planData.zoneStatus]}</p>
+            <SimulatedDataText className="font-semibold block">{zoneLabels[data.planData.zoneStatus]}</SimulatedDataText>
           </div>
           <div className="bg-warm-gray-50 rounded-md p-3">
             <p className="text-xs text-warm-gray-500">Maks. højde</p>
-            <p className="font-semibold text-warm-gray-700">{data.planData.maxHeight} m</p>
+            <SimulatedDataText className="font-semibold block">{data.planData.maxHeight} m</SimulatedDataText>
           </div>
           <div className="bg-warm-gray-50 rounded-md p-3">
             <p className="text-xs text-warm-gray-500">Bebyggelsesprocent</p>
-            <p className="font-semibold text-warm-gray-700">{data.planData.bebyggelsesprocent}%</p>
+            <SimulatedDataText className="font-semibold block">{data.planData.bebyggelsesprocent}%</SimulatedDataText>
           </div>
           <div className="bg-warm-gray-50 rounded-md p-3">
             <p className="text-xs text-warm-gray-500">Lokalplanref.</p>
-            <p className="font-semibold text-warm-gray-700">{data.planData.lokalplanRef}</p>
+            <SimulatedDataText className="font-semibold block">{data.planData.lokalplanRef}</SimulatedDataText>
           </div>
         </div>
       </div>

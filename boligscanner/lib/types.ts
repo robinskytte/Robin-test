@@ -78,10 +78,22 @@ export interface AmenityData {
   distance: number;
 }
 
+export interface SportsFacility {
+  name: string;
+  type: string;
+  distance: number;
+}
+
+export interface MajorCityCommute {
+  name: string;
+  distance: number; // km
+}
+
 export interface FamilyData {
   schools: SchoolData[];
   daycares: DaycareData[];
-  commuteMinutes: { copenhagen: number; aarhus: number };
+  sportsFacilities: SportsFacility[];
+  majorCities: MajorCityCommute[]; // 2 closest major cities
   parks: { name: string; distance: number }[];
   score: string; // A-F
 }

@@ -2,6 +2,7 @@ import {
   BBRData, FamilyData, RiskData, BuildingPotentialData,
   NeighborhoodData, ClimateData, EnvironmentalData, PlanData, TrendData,
 } from './types';
+import { getClosestMajorCities } from './distances';
 
 // Seeded random based on coordinates for deterministic results
 function seededRandom(lat: number, lng: number, salt = 0): () => number {
@@ -127,6 +128,8 @@ export function generateFamilyData(lat: number, lng: number, postalCode: string)
   const daycareNames = ['Solstrålen', 'Børnehuset Regnbuen', 'Tumlegården', 'Mariehønen',
     'Skovtrolden', 'Lillebo', 'Spiren', 'Eventyrhuset'];
   const parkNames = ['Byparken', 'Skovparken', 'Strandparken', 'Lunden', 'Grønningen'];
+  const sportsFacilityNames = ['Fitnesscenter Pro', 'SATS Gym', 'Crossfit Boxen', 'Svømmebad',
+    'Tennisklub', 'Badmintonhal', 'Ishockey-arena', 'Atletikbane'];
 
   const schools = Array.from({ length: between(2, 4, rand) }, (_, i) => ({
     name: schoolNames[(Math.floor(rand() * schoolNames.length) + i) % schoolNames.length],
@@ -141,8 +144,11 @@ export function generateFamilyData(lat: number, lng: number, postalCode: string)
     type: pick(['vuggestue', 'børnehave', 'integreret'] as const, rand),
   })).sort((a, b) => a.distance - b.distance);
 
-  const cphDist = Math.sqrt(Math.pow(lat - 55.676, 2) + Math.pow(lng - 12.568, 2));
-  const aarDist = Math.sqrt(Math.pow(lat - 56.162, 2) + Math.pow(lng - 10.203, 2));
+  const sportsFacilities = Array.from({ length: between(2, 4, rand) }, (_, i) => ({
+    name: sportsFacilityNames[(Math.floor(rand() * sportsFacilityNames.length) + i) % sportsFacilityNames.length],
+    type: pick(['fitnesscenter', 'svømmebad', 'halsport'], rand),
+    distance: urban ? +(0.3 + rand() * 1.2).toFixed(1) : +(1.0 + rand() * 3.0).toFixed(1),
+  })).sort((a, b) => a.distance - b.distance);
 
   const parks = Array.from({ length: between(1, 3, rand) }, (_, i) => ({
     name: parkNames[(Math.floor(rand() * parkNames.length) + i) % parkNames.length],
@@ -155,13 +161,17 @@ export function generateFamilyData(lat: number, lng: number, postalCode: string)
     avgSchoolGrade > 6.5 && avgSchoolDist < 2.5 ? 'B' :
     avgSchoolGrade > 6.0 ? 'C' : avgSchoolGrade > 5.5 ? 'D' : 'E';
 
+  // Get 2 closest major Danish cities
+  const closestCities = getClosestMajorCities(lat, lng, 2).map(city => ({
+    name: city.name,
+    distance: city.distance,
+  }));
+
   return {
     schools,
     daycares,
-    commuteMinutes: {
-      copenhagen: Math.round(cphDist * 40 + 10),
-      aarhus: Math.round(aarDist * 40 + 10),
-    },
+    sportsFacilities,
+    majorCities: closestCities,
     parks,
     score: familyScore,
   };

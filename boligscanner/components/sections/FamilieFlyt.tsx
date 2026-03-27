@@ -24,14 +24,14 @@ export default function FamilieFlyt({ data }: FamilieFlytProps) {
 
       {/* Key findings */}
       <ul className="text-sm font-sans text-warm-gray-700 space-y-1">
-        <li>• {data.schools.length} skoler i nærheden — nærmeste {data.schools[0]?.distance} km væk</li>
-        <li>• {data.daycares.length} daginstitutioner tilgængelige</li>
-        <li>• Pendlertid til København: {data.commuteMinutes.copenhagen} min</li>
+        <li>• <span className="text-red-400 opacity-75">{data.schools.length} skoler i nærheden — nærmeste {data.schools[0]?.distance} km væk</span></li>
+        <li>• <span className="text-red-400 opacity-75">{data.daycares.length} daginstitutioner tilgængelige</span></li>
+        <li>• <span className="text-red-400 opacity-75">Nærmeste store byer: {data.majorCities[0]?.name} ({data.majorCities[0]?.distance} km), {data.majorCities[1]?.name} ({data.majorCities[1]?.distance} km)</span></li>
       </ul>
 
-      {/* Schools table */}
+      {/* Schools table - Simulated Data */}
       <div>
-        <h3 className="text-sm font-semibold font-sans text-navy mb-2">Skoler</h3>
+        <h3 className="text-sm font-semibold font-sans text-navy mb-2">Skoler <span className="text-xs text-red-400 opacity-75 font-normal">(simuleret data)</span></h3>
         <div className="overflow-x-auto">
           <table className="w-full text-sm font-sans">
             <thead>
@@ -44,7 +44,7 @@ export default function FamilieFlyt({ data }: FamilieFlytProps) {
             </thead>
             <tbody>
               {data.schools.map((school, index) => (
-                <tr key={index} className="border-b border-warm-gray-100 text-warm-gray-700">
+                <tr key={index} className="border-b border-warm-gray-100 text-red-400 opacity-75">
                   <td className="py-2 pr-4">{school.name}</td>
                   <td className="py-2 pr-4">{school.distance} km</td>
                   <td className="py-2 pr-4">{school.gradeAverage.toFixed(1)}</td>
@@ -56,9 +56,9 @@ export default function FamilieFlyt({ data }: FamilieFlytProps) {
         </div>
       </div>
 
-      {/* Daycares table */}
+      {/* Daycares table - Simulated Data */}
       <div>
-        <h3 className="text-sm font-semibold font-sans text-navy mb-2">Daginstitutioner</h3>
+        <h3 className="text-sm font-semibold font-sans text-navy mb-2">Daginstitutioner <span className="text-xs text-red-400 opacity-75 font-normal">(simuleret data)</span></h3>
         <div className="overflow-x-auto">
           <table className="w-full text-sm font-sans">
             <thead>
@@ -70,7 +70,7 @@ export default function FamilieFlyt({ data }: FamilieFlytProps) {
             </thead>
             <tbody>
               {data.daycares.map((daycare, index) => (
-                <tr key={index} className="border-b border-warm-gray-100 text-warm-gray-700">
+                <tr key={index} className="border-b border-warm-gray-100 text-red-400 opacity-75">
                   <td className="py-2 pr-4">{daycare.name}</td>
                   <td className="py-2 pr-4">{daycare.distance} km</td>
                   <td className="py-2 capitalize">{daycare.type}</td>
@@ -81,25 +81,33 @@ export default function FamilieFlyt({ data }: FamilieFlytProps) {
         </div>
       </div>
 
-      {/* Commute times */}
+      {/* Major Cities Distance - Simulated Data */}
       <div>
-        <h3 className="text-sm font-semibold font-sans text-navy mb-2">Pendlertider</h3>
+        <h3 className="text-sm font-semibold font-sans text-navy mb-2">Afstand til større byer <span className="text-xs text-red-400 opacity-75 font-normal">(simuleret)</span></h3>
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-warm-gray-50 rounded-md p-3 text-center">
-            <p className="text-xs text-warm-gray-500 font-sans">København</p>
-            <p className="text-lg font-semibold text-navy">{data.commuteMinutes.copenhagen} min</p>
-          </div>
-          <div className="bg-warm-gray-50 rounded-md p-3 text-center">
-            <p className="text-xs text-warm-gray-500 font-sans">Aarhus</p>
-            <p className="text-lg font-semibold text-navy">{data.commuteMinutes.aarhus} min</p>
-          </div>
+          {data.majorCities.map((city, idx) => (
+            <div key={idx} className="bg-warm-gray-50 rounded-md p-3 text-center">
+              <p className="text-xs text-warm-gray-500 font-sans">{city.name}</p>
+              <p className="text-lg font-semibold text-red-400 opacity-75">{city.distance} km</p>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Parks */}
+      {/* Sports Facilities - Simulated Data */}
       <div>
-        <h3 className="text-sm font-semibold font-sans text-navy mb-2">Parker og grønne områder</h3>
-        <ul className="text-sm font-sans text-warm-gray-700 space-y-1">
+        <h3 className="text-sm font-semibold font-sans text-navy mb-2">Sportsfaciliteter <span className="text-xs text-red-400 opacity-75 font-normal">(simuleret data)</span></h3>
+        <ul className="text-sm font-sans text-red-400 opacity-75 space-y-1">
+          {data.sportsFacilities.map((facility, index) => (
+            <li key={index}>• {facility.name} ({facility.type}) — {facility.distance} km</li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Parks - Simulated Data */}
+      <div>
+        <h3 className="text-sm font-semibold font-sans text-navy mb-2">Parker og grønne områder <span className="text-xs text-red-400 opacity-75 font-normal">(simuleret data)</span></h3>
+        <ul className="text-sm font-sans text-red-400 opacity-75 space-y-1">
           {data.parks.map((park, index) => (
             <li key={index}>• {park.name} — {park.distance} km</li>
           ))}
@@ -108,7 +116,8 @@ export default function FamilieFlyt({ data }: FamilieFlytProps) {
 
       <DataSourceFooter
         sources={[
-          { label: 'Skole- og institutionsdata', source: 'Simuleret datasæt', simulated: true },
+          { label: 'Skoler, daginstitutioner, sports- og parkfaciliteter', source: 'Simuleret datasæt', simulated: true },
+          { label: 'Afstand til byer', source: 'Simuleret baseret på adresse-koordinater', simulated: true },
           { label: 'Adressedata', source: 'DAWA (Danmarks Adressers Web API)' },
         ]}
       />
