@@ -1,8 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Suspense } from 'react';
 import { getAddress } from '@/lib/dawa';
 import { getMunicipalityCode, getPropertyPrices, getPopulationData, getIncomeData } from '@/lib/statbank';
 import {
@@ -30,21 +29,34 @@ function AnalyseContent() {
   const [activeLayers, setActiveLayers] = useState<string[]>(['family']);
 
   useEffect(() => {
-    if (!id) { setError('Ingen adresse angivet.'); setLoading(false); return; }
+    if (!id) {
+      setError('Ingen adresse angivet.');
+      setLoading(false);
+      return;
+    }
 
     async function loadAnalysis() {
       setLoading(true);
+      setError(null);
       try {
         const address = await getAddress(id);
         if (!address) {
-          setError('Adressen blev ikke fundet.');
+          setError('Adressen blev ikke fundet. Prøv igen fra forsiden.');
           setLoading(false);
           return;
         }
 
-        const [lng, lat] = address.adgangsadresse.koordinater;
-        const postalCode = address.adgangsadresse.postnummer.nr;
-        const municipalityName = address.adgangsadresse.kommune.navn;
+        // Defensive: check required nested fields exist
+        const coords = address?.adgangsadresse?.koordinater;
+        if (!coords || coords.length < 2) {
+          setError('Kunne ikke hente koordinater for adressen.');
+          setLoading(false);
+          return;
+        }
+
+        const [lng, lat] = coords;
+        const postalCode = address.adgangsadresse?.postnummer?.nr ?? '1000';
+        const municipalityName = address.adgangsadresse?.kommune?.navn ?? 'København';
         const munCode = getMunicipalityCode(municipalityName);
 
         const bbr = generateBBRData(lat, lng, postalCode);
@@ -59,6 +71,7 @@ function AnalyseContent() {
           : 20000;
         const buildingPotential = generateBuildingPotentialData(lat, lng, postalCode, avgSqmPrice);
 
+        // Try to enhance with real StatBank data (non-critical)
         try {
           const [priceData, popData, incData] = await Promise.allSettled([
             getPropertyPrices(munCode),
@@ -69,42 +82,33 @@ function AnalyseContent() {
           if (priceData.status === 'fulfilled' && priceData.value) {
             const { labels, values } = priceData.value;
             if (labels.length > 0 && values.length > 0) {
-              trends = {
-                ...trends,
-                priceHistory: labels.map((label: string, i: number) => ({
-                  year: parseInt(label) || 2015 + i,
-                  value: values[i] || 0,
-                })).filter((d: { value: number }) => d.value > 0),
-              };
+              const history = labels.map((l: string, i: number) => ({
+                year: parseInt(l) || 2015 + i,
+                value: values[i] || 0,
+              })).filter((d: { value: number }) => d.value > 0);
+              if (history.length > 0) trends = { ...trends, priceHistory: history };
             }
           }
-
           if (popData.status === 'fulfilled' && popData.value) {
             const { labels, values } = popData.value;
             if (labels.length > 0 && values.length > 0) {
-              trends = {
-                ...trends,
-                populationTrend: labels.map((label: string, i: number) => ({
-                  year: parseInt(label) || 2015 + i,
-                  value: values[i] || 0,
-                })).filter((d: { value: number }) => d.value > 0),
-              };
+              const pop = labels.map((l: string, i: number) => ({
+                year: parseInt(l) || 2015 + i,
+                value: values[i] || 0,
+              })).filter((d: { value: number }) => d.value > 0);
+              if (pop.length > 0) trends = { ...trends, populationTrend: pop };
             }
           }
-
           if (incData.status === 'fulfilled' && incData.value) {
             const { labels, values } = incData.value;
             if (labels.length > 0 && values.length > 0) {
-              trends = {
-                ...trends,
-                incomeTrend: labels.map((label: string, i: number) => ({
-                  year: parseInt(label) || 2015 + i,
-                  value: values[i] || 0,
-                })).filter((d: { value: number }) => d.value > 0),
-              };
+              const inc = labels.map((l: string, i: number) => ({
+                year: parseInt(l) || 2015 + i,
+                value: values[i] || 0,
+              })).filter((d: { value: number }) => d.value > 0);
+              if (inc.length > 0) trends = { ...trends, incomeTrend: inc };
             }
           }
-
           if (trends.priceHistory.length >= 2) {
             const first = trends.priceHistory[0].value;
             const last = trends.priceHistory[trends.priceHistory.length - 1].value;
@@ -112,7 +116,7 @@ function AnalyseContent() {
             trends.trajectory = change > 0.3 ? 'STIGENDE' : change > 0.05 ? 'STABIL' : 'FALDENDE';
           }
         } catch {
-          // StatBank fetch failed — use mock data
+          // StatBank optional — continue with mock data
         }
 
         setAnalysis({
@@ -125,8 +129,9 @@ function AnalyseContent() {
           climate,
           trends,
         });
-      } catch {
-        setError('Der opstod en fejl ved indlæsning af data.');
+      } catch (err) {
+        console.error('BoligScanner analysis error:', err);
+        setError('Der opstod en fejl ved indlæsning af data. Tjek din internetforbindelse og prøv igen.');
       }
       setLoading(false);
     }
@@ -142,10 +147,10 @@ function AnalyseContent() {
 
   if (loading) {
     return (
-      <main className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-2 border-warm-gray-300 border-t-navy rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-warm-gray-700">Analyserer adresse...</p>
+      <main className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center px-6">
+          <div className="w-8 h-8 border-2 border-gray-200 border-t-navy rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-sm text-warm-gray-700">Henter analyse...</p>
         </div>
       </main>
     );
@@ -153,15 +158,18 @@ function AnalyseContent() {
 
   if (error || !analysis) {
     return (
-      <main className="min-h-screen flex items-center justify-center">
-        <div className="text-center max-w-md">
-          <h2 className="font-serif text-2xl text-navy mb-2">Fejl</h2>
-          <p className="text-warm-gray-700 mb-4">{error || 'Ukendt fejl'}</p>
+      <main className="min-h-screen flex items-center justify-center bg-white px-6">
+        <div className="text-center max-w-sm">
+          <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
+            <span className="text-terra text-xl">!</span>
+          </div>
+          <h2 className="font-serif text-xl text-navy mb-2">Noget gik galt</h2>
+          <p className="text-sm text-warm-gray-700 mb-6">{error || 'Ukendt fejl'}</p>
           <button
             onClick={() => router.push('/')}
-            className="px-6 py-2 bg-navy text-white rounded-[4px] text-sm hover:bg-navy-light transition-colors"
+            className="px-6 py-3 bg-navy text-white text-sm font-medium hover:bg-navy-light transition-colors"
           >
-            Tilbage til forsiden
+            Søg igen
           </button>
         </div>
       </main>
@@ -172,57 +180,56 @@ function AnalyseContent() {
   const [lng, lat] = address.adgangsadresse.koordinater;
 
   return (
-    <main className="min-h-screen">
-      {/* Header */}
-      <header className="border-b border-warm-gray-200 bg-white">
-        <div className="max-w-[1400px] mx-auto px-4 py-4 flex items-center justify-between">
-          <button onClick={() => router.push('/')} className="font-serif text-xl text-navy hover:text-navy-light transition-colors">
+    <div className="min-h-screen bg-white">
+      {/* Nav */}
+      <nav className="border-b border-gray-100 bg-white sticky top-0 z-50">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+          <button
+            onClick={() => router.push('/')}
+            className="font-serif text-lg text-navy hover:text-gold transition-colors shrink-0"
+          >
             BoligScanner
           </button>
-          <div className="text-right">
-            <p className="text-sm font-medium text-warm-gray-900">{address.adressebetegnelse}</p>
+          <div className="text-right min-w-0">
+            <p className="text-sm font-medium text-navy truncate">{address.adressebetegnelse}</p>
             <p className="text-xs text-warm-gray-500">
-              {address.adgangsadresse.kommune.navn} · {address.adgangsadresse.postnummer.nr} {address.adgangsadresse.postnummer.navn}
+              {address.adgangsadresse.kommune.navn} · {address.adgangsadresse.postnummer.nr}
             </p>
           </div>
         </div>
-      </header>
+      </nav>
 
-      {/* BBR Summary Bar */}
-      <div className="border-b border-warm-gray-200 bg-warm-gray-100">
-        <div className="max-w-[1400px] mx-auto px-4 py-3 flex flex-wrap gap-x-6 gap-y-1 text-sm text-warm-gray-700">
-          <span><strong className="text-warm-gray-900">{analysis.bbr.buildingArea} m²</strong> bolig</span>
-          <span><strong className="text-warm-gray-900">{analysis.bbr.plotArea} m²</strong> grund</span>
-          <span>Opført <strong className="text-warm-gray-900">{analysis.bbr.constructionYear}</strong></span>
-          <span>Energimærke <strong className="text-warm-gray-900">{analysis.bbr.energyLabel}</strong></span>
-          <span>{analysis.bbr.material} · {analysis.bbr.heatingType}</span>
-          <span className="text-xs text-warm-gray-500 italic">(Simuleret BBR-data)</span>
+      {/* BBR bar */}
+      <div className="border-b border-gray-100 bg-gray-50">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-2.5 flex flex-wrap gap-x-5 gap-y-1 text-xs text-warm-gray-700">
+          <span><strong className="text-navy font-semibold">{analysis.bbr.buildingArea} m²</strong> bolig</span>
+          <span><strong className="text-navy font-semibold">{analysis.bbr.plotArea} m²</strong> grund</span>
+          <span>Opført <strong className="text-navy font-semibold">{analysis.bbr.constructionYear}</strong></span>
+          <span>Energi <strong className="text-navy font-semibold">{analysis.bbr.energyLabel}</strong></span>
+          <span className="text-warm-gray-500 italic">Simuleret BBR</span>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-[1400px] mx-auto px-4 py-6">
+      {/* Content */}
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-6">
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* Map Column */}
-          <div className="lg:w-[60%] w-full">
-            <div className="sticky top-4">
-              <div className="relative border border-warm-gray-200 rounded-[4px] overflow-hidden bg-white">
+          {/* Map */}
+          <div className="lg:w-[58%] w-full">
+            <div className="lg:sticky lg:top-24">
+              <div className="relative border border-gray-200 overflow-hidden bg-white">
                 <AnalysisMap lat={lat} lng={lng} activeLayers={activeLayers} />
                 <LayerToggle activeLayers={activeLayers} onToggle={toggleLayer} />
               </div>
               <div className="mt-3 flex justify-end">
-                <a
-                  href={`/rapport?id=${encodeURIComponent(id)}`}
-                  className="text-sm text-navy hover:text-gold transition-colors"
-                >
-                  Se fuld rapport →
+                <a href={`/rapport?id=${encodeURIComponent(id)}`} className="text-xs text-warm-gray-500 hover:text-navy transition-colors">
+                  Fuld rapport →
                 </a>
               </div>
             </div>
           </div>
 
-          {/* Report Column */}
-          <div className="lg:w-[40%] w-full space-y-6">
+          {/* Report */}
+          <div className="lg:w-[42%] w-full space-y-4">
             <FamilieFlyt data={analysis.family} />
             <BoligRisiko data={analysis.risk} />
             <BygPotentiale data={analysis.buildingPotential} />
@@ -232,7 +239,14 @@ function AnalyseContent() {
           </div>
         </div>
       </div>
-    </main>
+
+      {/* Footer */}
+      <footer className="border-t border-gray-100 mt-12 py-6 px-6">
+        <div className="max-w-[1400px] mx-auto text-xs text-warm-gray-500 text-center">
+          BoligScanner beta — simulerede data. Ikke juridisk rådgivning.
+        </div>
+      </footer>
+    </div>
   );
 }
 
@@ -240,7 +254,7 @@ export default function AnalysePage() {
   return (
     <Suspense fallback={
       <main className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-warm-gray-300 border-t-navy rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-gray-200 border-t-navy rounded-full animate-spin" />
       </main>
     }>
       <AnalyseContent />

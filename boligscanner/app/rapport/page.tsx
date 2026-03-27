@@ -32,9 +32,11 @@ function RapportContent() {
         const address = await getAddress(id);
         if (!address) { setLoading(false); return; }
 
-        const [lng, lat] = address.adgangsadresse.koordinater;
-        const postalCode = address.adgangsadresse.postnummer.nr;
-        const municipalityName = address.adgangsadresse.kommune.navn;
+        const coords = address?.adgangsadresse?.koordinater;
+        if (!coords || coords.length < 2) { setLoading(false); return; }
+        const [lng, lat] = coords;
+        const postalCode = address.adgangsadresse?.postnummer?.nr ?? '1000';
+        const municipalityName = address.adgangsadresse?.kommune?.navn ?? 'København';
         const munCode = getMunicipalityCode(municipalityName);
 
         const bbr = generateBBRData(lat, lng, postalCode);

@@ -4,37 +4,34 @@
   --color-navy: #1B2A4A;
   --color-navy-light: #2A3D66;
   --color-gold: #B8944F;
-  --color-gold-light: #D4B06A;
   --color-sage: #5C8A6A;
-  --color-sage-light: #7AAD8A;
   --color-amber: #D4915C;
-  --color-amber-light: #E0A875;
   --color-terra: #C4594A;
-  --color-terra-light: #D4736A;
   --color-warm-white: #FAFAF8;
   --color-warm-gray-100: #F5F4F0;
   --color-warm-gray-200: #E8E6E0;
   --color-warm-gray-300: #D0CEC8;
   --color-warm-gray-500: #9B9790;
   --color-warm-gray-700: #6B6560;
-  --color-warm-gray-900: #3D3832;
+  --color-warm-gray-900: #1A1A1A;
   --font-serif: 'DM Serif Display', serif;
-  --font-sans: 'DM Sans', sans-serif;
+  --font-sans: 'Inter', 'DM Sans', sans-serif;
 }
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-warm-white);
   color: var(--color-warm-gray-900);
+  background: #ffffff;
 }
 
 h1, h2, h3, h4 {
-  font-family: var(--font-serif);
   color: var(--color-navy);
 }
 
-/* Leaflet container styling */
+.font-serif {
+  font-family: var(--font-serif);
+}
+
 .leaflet-container {
   font-family: var(--font-sans) !important;
-  border-radius: 4px;
 }
