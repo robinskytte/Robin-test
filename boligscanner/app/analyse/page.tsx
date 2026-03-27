@@ -2,7 +2,7 @@
 
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { getAddress } from '@/lib/dawa';
+import { getAddress, estimateCoordinatesFromPostalCode } from '@/lib/dawa';
 import { getMunicipalityCode, getPropertyPrices, getPopulationData, getIncomeData } from '@/lib/statbank';
 import {
   generateBBRData, generateFamilyData, generateRiskData,
@@ -48,14 +48,18 @@ function AnalyseContent() {
 
         // Defensive: check required nested fields exist
         const coords = address?.adgangsadresse?.koordinater;
-        if (!coords || coords.length < 2) {
-          setError('Kunne ikke hente koordinater for adressen.');
-          setLoading(false);
-          return;
-        }
-
-        const [lng, lat] = coords;
         const postalCode = address.adgangsadresse?.postnummer?.nr ?? '1000';
+
+        let [lng, lat] = coords && coords.length >= 2
+          ? coords
+          : estimateCoordinatesFromPostalCode(postalCode);
+
+        if (!coords || coords.length < 2) {
+          console.warn('No valid coordinates from DAWA, using postal code estimate:', {
+            postalCode,
+            estimatedCoords: [lng, lat],
+          });
+        }
         const municipalityName = address.adgangsadresse?.kommune?.navn ?? 'København';
         const munCode = getMunicipalityCode(municipalityName);
 
