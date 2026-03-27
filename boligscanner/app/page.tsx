@@ -17,7 +17,7 @@ export default function HomePage() {
   const router = useRouter();
 
   const handleSelect = (address: DawaAutocompleteResult) => {
-    router.push(`/analyse/${address.adresse.id}`);
+    router.push(`/analyse?id=${encodeURIComponent(address.adresse.id)}`);
   };
 
   return (

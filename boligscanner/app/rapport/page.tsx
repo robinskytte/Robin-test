@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState, use } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { getAddress } from '@/lib/dawa';
 import { getMunicipalityCode, getPropertyPrices, getPopulationData, getIncomeData } from '@/lib/statbank';
 import {
@@ -17,13 +17,16 @@ import NaerOmraadeScore from '@/components/sections/NaerOmraadeScore';
 import KlimaBolig from '@/components/sections/KlimaBolig';
 import BoligPuls from '@/components/sections/BoligPuls';
 
-export default function RapportPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+function RapportContent() {
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id') || '';
   const router = useRouter();
   const [analysis, setAnalysis] = useState<FullAnalysis | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!id) { setLoading(false); return; }
+
     async function loadAnalysis() {
       try {
         const address = await getAddress(id);
@@ -55,34 +58,25 @@ export default function RapportPage({ params }: { params: Promise<{ id: string }
           if (priceData.status === 'fulfilled' && priceData.value) {
             const { labels, values } = priceData.value;
             if (labels.length > 0 && values.length > 0) {
-              trends = {
-                ...trends,
-                priceHistory: labels.map((l: string, i: number) => ({
-                  year: parseInt(l) || 2015 + i, value: values[i] || 0,
-                })).filter((d: { value: number }) => d.value > 0),
-              };
+              trends = { ...trends, priceHistory: labels.map((l: string, i: number) => ({
+                year: parseInt(l) || 2015 + i, value: values[i] || 0,
+              })).filter((d: { value: number }) => d.value > 0) };
             }
           }
           if (popData.status === 'fulfilled' && popData.value) {
             const { labels, values } = popData.value;
             if (labels.length > 0 && values.length > 0) {
-              trends = {
-                ...trends,
-                populationTrend: labels.map((l: string, i: number) => ({
-                  year: parseInt(l) || 2015 + i, value: values[i] || 0,
-                })).filter((d: { value: number }) => d.value > 0),
-              };
+              trends = { ...trends, populationTrend: labels.map((l: string, i: number) => ({
+                year: parseInt(l) || 2015 + i, value: values[i] || 0,
+              })).filter((d: { value: number }) => d.value > 0) };
             }
           }
           if (incData.status === 'fulfilled' && incData.value) {
             const { labels, values } = incData.value;
             if (labels.length > 0 && values.length > 0) {
-              trends = {
-                ...trends,
-                incomeTrend: labels.map((l: string, i: number) => ({
-                  year: parseInt(l) || 2015 + i, value: values[i] || 0,
-                })).filter((d: { value: number }) => d.value > 0),
-              };
+              trends = { ...trends, incomeTrend: labels.map((l: string, i: number) => ({
+                year: parseInt(l) || 2015 + i, value: values[i] || 0,
+              })).filter((d: { value: number }) => d.value > 0) };
             }
           }
           if (trends.priceHistory.length >= 2) {
@@ -129,22 +123,19 @@ export default function RapportPage({ params }: { params: Promise<{ id: string }
         <div className="flex items-center justify-between mb-4">
           <h1 className="font-serif text-2xl text-navy">BoligScanner</h1>
           <button
-            onClick={() => router.push(`/analyse/${id}`)}
+            onClick={() => router.push(`/analyse?id=${encodeURIComponent(id)}`)}
             className="text-sm text-navy hover:text-gold transition-colors print:hidden"
           >
             ← Tilbage til analyse
           </button>
         </div>
-        <h2 className="font-serif text-3xl text-navy mb-2">
-          Ejendomsrapport
-        </h2>
+        <h2 className="font-serif text-3xl text-navy mb-2">Ejendomsrapport</h2>
         <p className="text-lg text-warm-gray-900">{address.adressebetegnelse}</p>
         <p className="text-sm text-warm-gray-500">
           {address.adgangsadresse.kommune.navn} · {address.adgangsadresse.postnummer.nr} {address.adgangsadresse.postnummer.navn}
         </p>
         <p className="text-xs text-warm-gray-500 mt-2">Rapport genereret: {today}</p>
 
-        {/* BBR Summary */}
         <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
             { label: 'Boligareal', value: `${analysis.bbr.buildingArea} m²` },
@@ -160,7 +151,6 @@ export default function RapportPage({ params }: { params: Promise<{ id: string }
         </div>
       </div>
 
-      {/* Report Sections */}
       <div className="space-y-8">
         <FamilieFlyt data={analysis.family} />
         <BoligRisiko data={analysis.risk} />
@@ -170,7 +160,6 @@ export default function RapportPage({ params }: { params: Promise<{ id: string }
         <BoligPuls data={analysis.trends} />
       </div>
 
-      {/* Report Footer */}
       <div className="mt-12 pt-6 border-t border-warm-gray-200">
         <h3 className="font-serif text-lg text-navy mb-3">Datakilder</h3>
         <ul className="text-xs text-warm-gray-500 space-y-1">
@@ -182,19 +171,26 @@ export default function RapportPage({ params }: { params: Promise<{ id: string }
           <li>• Miljødata: Simuleret (kræver Danmarks Miljøportal API-adgang)</li>
           <li>• Klimadata: Simuleret (kræver DMI Open Data API-nøgle)</li>
         </ul>
-
         <div className="mt-6 p-4 border border-warm-gray-200 rounded-[4px] bg-warm-gray-100">
           <p className="text-xs text-warm-gray-700">
             <strong>Disclaimer:</strong> BoligScanner er i betaversion. Simulerede data anvendes hvor API-adgang kræver registrering.
             Brug ikke denne rapport som grundlag for købsbeslutninger uden professionel rådgivning.
-            Endelige data kræver integration med BBR, Plandata.dk, Danmarks Miljøportal og DMI.
           </p>
         </div>
-
-        <p className="text-center text-xs text-warm-gray-500 mt-6">
-          Powered by BoligScanner — beta version
-        </p>
+        <p className="text-center text-xs text-warm-gray-500 mt-6">Powered by BoligScanner — beta version</p>
       </div>
     </main>
+  );
+}
+
+export default function RapportPage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-warm-gray-300 border-t-navy rounded-full animate-spin" />
+      </main>
+    }>
+      <RapportContent />
+    </Suspense>
   );
 }

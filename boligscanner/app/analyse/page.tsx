@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState, use } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import { getAddress } from '@/lib/dawa';
 import { getMunicipalityCode, getPropertyPrices, getPopulationData, getIncomeData } from '@/lib/statbank';
 import {
@@ -19,8 +20,9 @@ import NaerOmraadeScore from '@/components/sections/NaerOmraadeScore';
 import KlimaBolig from '@/components/sections/KlimaBolig';
 import BoligPuls from '@/components/sections/BoligPuls';
 
-export default function AnalysePage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+function AnalyseContent() {
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id') || '';
   const router = useRouter();
   const [analysis, setAnalysis] = useState<FullAnalysis | null>(null);
   const [loading, setLoading] = useState(true);
@@ -28,6 +30,8 @@ export default function AnalysePage({ params }: { params: Promise<{ id: string }
   const [activeLayers, setActiveLayers] = useState<string[]>(['family']);
 
   useEffect(() => {
+    if (!id) { setError('Ingen adresse angivet.'); setLoading(false); return; }
+
     async function loadAnalysis() {
       setLoading(true);
       try {
@@ -43,7 +47,6 @@ export default function AnalysePage({ params }: { params: Promise<{ id: string }
         const municipalityName = address.adgangsadresse.kommune.navn;
         const munCode = getMunicipalityCode(municipalityName);
 
-        // Generate mock/hybrid data
         const bbr = generateBBRData(lat, lng, postalCode);
         const family = generateFamilyData(lat, lng, postalCode);
         const risk = generateRiskData(lat, lng);
@@ -51,13 +54,11 @@ export default function AnalysePage({ params }: { params: Promise<{ id: string }
         const climate = generateClimateData(lat, lng, bbr);
         let trends = generateTrendData(lat, lng);
 
-        // Estimated sqm price for building potential
         const avgSqmPrice = trends.priceHistory.length > 0
           ? trends.priceHistory[trends.priceHistory.length - 1].value
           : 20000;
         const buildingPotential = generateBuildingPotentialData(lat, lng, postalCode, avgSqmPrice);
 
-        // Try to enhance with real StatBank data
         try {
           const [priceData, popData, incData] = await Promise.allSettled([
             getPropertyPrices(munCode),
@@ -104,7 +105,6 @@ export default function AnalysePage({ params }: { params: Promise<{ id: string }
             }
           }
 
-          // Recalculate trajectory
           if (trends.priceHistory.length >= 2) {
             const first = trends.priceHistory[0].value;
             const last = trends.priceHistory[trends.priceHistory.length - 1].value;
@@ -112,7 +112,7 @@ export default function AnalysePage({ params }: { params: Promise<{ id: string }
             trends.trajectory = change > 0.3 ? 'STIGENDE' : change > 0.05 ? 'STABIL' : 'FALDENDE';
           }
         } catch {
-          // StatBank data fetch failed — use mock data
+          // StatBank fetch failed — use mock data
         }
 
         setAnalysis({
@@ -136,9 +136,7 @@ export default function AnalysePage({ params }: { params: Promise<{ id: string }
 
   const toggleLayer = (layer: string) => {
     setActiveLayers((prev) =>
-      prev.includes(layer)
-        ? prev.filter((l) => l !== layer)
-        : [...prev, layer]
+      prev.includes(layer) ? prev.filter((l) => l !== layer) : [...prev, layer]
     );
   };
 
@@ -214,7 +212,7 @@ export default function AnalysePage({ params }: { params: Promise<{ id: string }
               </div>
               <div className="mt-3 flex justify-end">
                 <a
-                  href={`/rapport/${id}`}
+                  href={`/rapport?id=${encodeURIComponent(id)}`}
                   className="text-sm text-navy hover:text-gold transition-colors"
                 >
                   Se fuld rapport →
@@ -235,5 +233,17 @@ export default function AnalysePage({ params }: { params: Promise<{ id: string }
         </div>
       </div>
     </main>
+  );
+}
+
+export default function AnalysePage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-warm-gray-300 border-t-navy rounded-full animate-spin" />
+      </main>
+    }>
+      <AnalyseContent />
+    </Suspense>
   );
 }
